@@ -20,7 +20,7 @@ Created on Thu Mar 10 11:24:36 2016. Runtime is in minutes.
 """
 
 
-__author__ = "Mark de Boer"
+__author__ = ""
 
 
 sns.set_palette("deep")
