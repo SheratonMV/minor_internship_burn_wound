@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 class WoundModel(Model):
     """An ABM wound healing model simulating inflammation and contraction."""
-    def __init__(self, Neutrophils, Macrophages, Fibroblasts, IL10,IL6,TNFa,TGFb, width, height, wound_radius, coagulation):
+    def __init__(self, Neutrophils, Macrophages, Fibroblasts, IL10,IL6,TNFa,TGFb,  width, height, wound_radius, coagulation):
 
         self.running = True
         self.neutrophils = Neutrophils
@@ -32,6 +32,10 @@ class WoundModel(Model):
         self.current_id = 0
         self.centre = (width//2, height//2)
         self.coagulation_size = wound_radius * coagulation
+        self.resting_neutrophils = 0
+        self.resting_macrophages = 0
+        self.resting_fibroblasts = 0
+        self.timer = 0
 
 
         #create wound and non-wound region
@@ -127,9 +131,18 @@ class WoundModel(Model):
 
     def step(self):
         self.schedule.step()
-        print('step')
         self.datacollector.collect(self)
+        self.timer += 1
+        if self.timer % 2:
+            self.resting_neutrophils += 2
 
+        if self.timer % 2:
+            self.resting_macrophages += 2
+
+        if self.timer % 6:
+            self.resting_fibroblasts += 2
+
+        print(self.resting_neutrophils)
         #cell_concentrations = self.datacollector.get_model_vars_dataframe()
         #print(cell_concentrations)
 
@@ -202,14 +215,14 @@ def batch_run(WoundModel):
 def loop_fig(fignum):
     return fignum + 1
 
-def run_model(step_count=50):
-    model = WoundModel(40,80,80,0,0,0,0,25,25,10,0.7)
+def run_model(step_count=100):
+    model = WoundModel(40,50,80,0.5,0,0,0,25,25,10,0.7)
     for i in range(step_count):
         model.step()
     cell_concentrations = model.datacollector.get_model_vars_dataframe()
 
 
-    modelAP = WoundModel(80, 80, 80, 0, 0, 0, 0, 25, 25, 10, 0.7)
+    modelAP = WoundModel(80, 50, 80, 1, 0, 0, 0, 25, 25, 10, 0.7)
     for i in range(step_count):
         modelAP.step()
     cell_concentrationsAP = modelAP.datacollector.get_model_vars_dataframe()
@@ -228,7 +241,7 @@ def run_model(step_count=50):
     plt.ylabel("Macrophages (Arbitrary units)", fontsize=fs)
     plt.xlabel("Time (h)", fontsize=fs)
     plt.title("Macrophages", fontsize=ts)
-    plt.legend({'Placebo', 'bIAP'}, loc='best', fontsize=lfs)
+    plt.legend({ 'bIAP', 'Placebo'}, loc='best', fontsize=lfs)
     plt.tick_params(labelsize=ls)
     plt.tight_layout()
     print('... Plotting macrophages')
@@ -240,7 +253,7 @@ def run_model(step_count=50):
     plt.plot(cell_concentrationsAP["Neutrophils"], linewidth=lw, ls='-', color = "#4daf4a")
     plt.ylabel("Neutrophils (Arbitrary units)", fontsize=fs)
     plt.xlabel("Time (h)", fontsize=fs)
-    plt.legend({'Placebo', 'bIAP'}, loc='best', fontsize=lfs)
+    plt.legend({ 'bIAP', 'Placebo'}, loc='best', fontsize=lfs)
     plt.title("Neutrophils", fontsize=ts)
     plt.tick_params(labelsize=ls)
     plt.tight_layout()
@@ -253,7 +266,7 @@ def run_model(step_count=50):
     plt.plot(cell_concentrationsAP["Fibroblasts"], linewidth=lw, ls='-', color = "#4daf4a" )
     plt.ylabel("Fibroblasts (Arbitrary units)", fontsize=fs)
     plt.xlabel("Time (h)", fontsize=fs)
-    plt.legend({'Placebo', 'bIAP'}, loc='best', fontsize=lfs)
+    plt.legend({ 'bIAP', 'Placebo'}, loc='best', fontsize=lfs)
     plt.title("Fibroblasts", fontsize=ts)
     plt.tick_params(labelsize=ls)
     plt.tight_layout()
@@ -267,7 +280,7 @@ def run_model(step_count=50):
     plt.plot(cell_concentrationsAP["Blood_flow"], linewidth=lw, ls='-', color="#4daf4a")
     plt.ylabel("Oxygen (%)", fontsize=fs)
     plt.xlabel("Time (h)", fontsize=fs)
-    plt.legend({'Placebo', 'bIAP'}, loc='best', fontsize=lfs)
+    plt.legend({ 'bIAP', 'Placebo'}, loc='best', fontsize=lfs)
     plt.title("Oxygen in wound", fontsize=ts)
     plt.tick_params(labelsize=ls)
     plt.tight_layout()
@@ -281,7 +294,7 @@ def run_model(step_count=50):
     plt.plot(cell_concentrationsAP["Collagen"], linewidth=lw, ls='-', color="#4daf4a")
     plt.ylabel("Collagen (%)", fontsize=fs)
     plt.xlabel("Time (h)", fontsize=fs)
-    plt.legend({'Placebo', 'bIAP'}, loc='best', fontsize=lfs)
+    plt.legend({ 'bIAP', 'Placebo'}, loc='best', fontsize=lfs)
     plt.title("Collagen % over whole wound", fontsize=ts)
     plt.tick_params(labelsize=ls)
     plt.tight_layout()

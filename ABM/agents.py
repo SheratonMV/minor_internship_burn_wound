@@ -21,57 +21,75 @@ class Endothelial(Agent):
         self.TGFb = TGFb
         self.TNFa = TNFa
         self.coll = coll
-        self.time = 0
+        self.neutrophil_time = 0
+        self.macrophage_time = 0
+        self.fibroblast_time = 0
+
 
 
     def attract_neutrophil(self):
         a = Neutrophil(self.model.next_id(), self.pos, self.model.centre, self.model)
         self.model.schedule.add(a)
         self.model.grid.place_agent(a, self.pos)
+        self.model.resting_neutrophils -= 1
+
 
     def attract_macrophage(self):
         a = Macrophage(self.model.next_id(), self.pos, self.model)
         self.model.schedule.add(a)
         self.model.grid.place_agent(a, self.pos)
+        self.model.resting_macrophages -= 1
 
     def attract_fibroblast(self):
         a = Fibroblast(self.model.next_id(), self.pos, self.model)
         self.model.schedule.add(a)
         self.model.grid.place_agent(a, self.pos)
+        self.model.resting_fibroblasts -= 1
 
-
-    def step(self):
-        self.time += 1
-        '''if self.TNFa > 0.1 and self.oxy >= 25 and self.IL10 < 0.3 and self.time % 6 == 0:
-            self.attract_macrophage()'''
-
-        '''if self.TNFa > 0.2 and self.oxy >= 25 and self.IL10 < 0.3:
-            self.attract_neutrophil()
-            self.TNFa = 0
-
-        if self.TGFb > 0.2 and self.coll != 100:
-            self.attract_fibroblast()'''
-
-        #decay of cytokines
-        if self.IL6 <=0:
+    def decay_cytokines(self):
+        # decay of cytokines
+        if self.IL6 <= 0:
             self.IL6 = 0
         else:
-            self.IL6 -= 0.01
+            self.IL6 -= 0.02
 
-        if self.IL10 <=0:
+        if self.IL10 <= 0:
             self.IL10 = 0
         else:
-            self.IL10 -= 0.01
+            self.IL10 -= 0.02
 
         if self.TNFa <= 0:
             self.TNFa = 0
         else:
-            self.TNFa -= 0.01
+            self.TNFa -= 0.02
 
         if self.TGFb <= 0:
             self.TGFb = 0
         else:
-            self.TGFb -= 0.01
+            self.TGFb -= 0.02
+
+
+    def step(self):
+
+        self.macrophage_time += 1
+        self.neutrophil_time += 1
+        self.fibroblast_time += 1
+
+        if self.TNFa > 2 and self.oxy >= 25 and self.IL10 < 2 and self.macrophage_time > 6 and self.model.resting_macrophages > 1:
+            self.attract_macrophage()
+            self.macrophage_time = 0
+
+
+        if self.TNFa > 2 and self.oxy >= 25 and self.IL6 > 1 and self.neutrophil_time > 2 and self.model.resting_neutrophils > 1:
+            self.attract_neutrophil()
+            self.neutrophil_time = 0
+
+
+        if self.TGFb > 5 and self.coll < 100 and self.fibroblast_time > 8  and self.model.resting_macrophages > 1:
+            self.attract_fibroblast()
+            self.fibroblast_time = 0
+
+        self.decay_cytokines()
 
 
 
@@ -85,6 +103,8 @@ class Neutrophil(Agent):
         self.energy = 1
         self.pos = pos
         self.centre = centre
+        self.apoptotic_hours = 0
+        self.apoptised = False
 
     def move(self):
         possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False)
@@ -171,7 +191,7 @@ class Neutrophil(Agent):
                     if agent.oxy >= 100:
                         pass
                     else:
-                        agent.oxy += 3
+                        agent.oxy += 1
             elif type(agent) is Endothelial:
                 if self.energy > 0:
                     if agent.oxy >= 100:
@@ -183,6 +203,19 @@ class Neutrophil(Agent):
                 if self.energy == 0:
                     print('remove neutrophil')
 
+    def necrosis(self):
+        self.apoptotic_hours += 1
+        if self.apoptotic_hours == 5 and self.apoptised == False:
+            neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=True)
+            for agent in neighbors:
+                if type(agent) is Endothelial and agent.pos == self.pos:
+                    # agent.TNFa += 0.01 - agent.IL10*0.01 - agent.TGFb* 0.01 + agent.IL6*0.01
+                    agent.TNFa += 0.004
+                    agent.oxy -= 10
+                elif type(agent) is Endothelial:
+                    agent.TNFa += 0.002
+                    agent.oxy -= 5
+            print('boom')
 
     def step(self):
         """Step:
@@ -190,14 +223,19 @@ class Neutrophil(Agent):
 
 
         if self.energy <= 0:
-            pass
+            self.necrosis()
         else:
             self.move()
             self.update_cytokines()
             self.heal()
 
             #lifespan is ~ 2 days energy represents life span
-            self.energy = self.energy - 0.02
+            cellmates = self.model.grid.get_cell_list_contents([self.pos])
+            for agent in cellmates:
+                if type(agent) is Endothelial:
+                    energy_loss_IL10 = agent.IL10 * 0.01
+
+            self.energy = self.energy - 0.03 - energy_loss_IL10
 
 
 
@@ -248,10 +286,10 @@ class Macrophage(Agent):
                     if agent.oxy >= 100:
                         pass
                     else:
-                        agent.oxy += 3
+                        agent.oxy += 1
                     counter = counter + 2
                     modulation = modulation + agent.TNFa + agent.IL6
-            if modulation / counter > 0.9:
+            if modulation / counter > 2:
                 self.phenotype = 1
 
         else:
@@ -262,6 +300,14 @@ class Macrophage(Agent):
                     agent.TNFa = agent.TNFa + 0.01
             self.energy = self.energy - 0.05
 
+    def apoptise_neutrophil(self):
+        cellmates = self.model.grid.get_cell_list_contents([self.pos])
+        for agent in cellmates:
+            if type(agent) == Neutrophil and agent.energy <= 0 and agent.apoptised == False:
+                agent.apoptised = True
+                print('kill motherfucker')
+
+
 
     def step(self):
         if self.energy <= 0:
@@ -269,6 +315,7 @@ class Macrophage(Agent):
         else:
             self.move()
             self.secrete()
+            self.apoptise_neutrophil()
 
             # lifespan is ~ 4 days energy represents life span
             self.energy -= 0.004
@@ -339,19 +386,19 @@ class Fibroblast(Agent):
     def step(self):
         """ Step"""
         # only migration over the non-wounded areas.
-        if self.model.blood_flow() > 95:
-            self.energy -= 0.005
+        if self.model.blood_flow() > 90:
+
             cellmates = self.model.grid.get_cell_list_contents([self.pos])
             for agent in cellmates:
                 if type(agent) is Endothelial:
                     if agent.coll >= 100 and agent.oxy >= 25:
                         self.move()
-                        self.secrete_collagen()
-                        self.secrete_TGFb()
+                        self.energy -= 0.002
 
                     elif agent.coll <100 and agent.oxy >= 25:
                         self.secrete_collagen()
                         self.secrete_TGFb()
+                        self.energy -= 0.005
 
 
 
