@@ -30,9 +30,9 @@ def agent_portrayal(agent):
 
             portrayal["Color"] = "tan"
             portrayal["Layer"] = 0
-        #elif agent.oxy >= 25 and agent.coll >= 100:
-         #   portrayal["Color"] = "#FFA54F"
-          #  portrayal["Layer"] = 0
+        elif agent.oxy >= 25 and agent.coll >= 100:
+            portrayal["Color"] = "#FFA54F"
+            portrayal["Layer"] = 0
         elif agent.oxy >= 25 and agent.coll < 100:
             portrayal["Color"] = "red"
             portrayal["Layer"] = 0

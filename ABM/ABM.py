@@ -32,8 +32,8 @@ class WoundModel(Model):
         self.current_id = 0
         self.centre = (width//2, height//2)
         self.coagulation_size = wound_radius * coagulation
-        self.resting_neutrophils = 0
-        self.resting_macrophages = 0
+        self.resting_neutrophils = 20
+        self.resting_macrophages = 20
         self.resting_fibroblasts = 0
         self.timer = 0
 
@@ -118,7 +118,8 @@ class WoundModel(Model):
         self.running = True
 
         self.datacollector = DataCollector(model_reporters={"Blood_flow": Blood_flow,"Collagen": Collagen, "Macrophages": Macrophage_count, "Neutrophils": Neutrophil_count, "Fibroblasts": Fibroblast_count})
-
+        print(len(self.wound_coord))
+        print(len(self.healthy))
 
 
 
@@ -133,14 +134,15 @@ class WoundModel(Model):
         self.schedule.step()
         self.datacollector.collect(self)
         self.timer += 1
-        if self.timer % 2:
-            self.resting_neutrophils += 2
 
-        if self.timer % 2:
-            self.resting_macrophages += 2
+        if self.timer % 2 == 0:
+            self.resting_neutrophils += 1
 
-        if self.timer % 6:
-            self.resting_fibroblasts += 2
+        if self.timer % 4 == 0:
+            self.resting_macrophages += 1
+
+        if self.timer % 8 == 0:
+            self.resting_fibroblasts += 1
 
         print(self.resting_neutrophils)
         #cell_concentrations = self.datacollector.get_model_vars_dataframe()
@@ -152,14 +154,15 @@ class WoundModel(Model):
 
 
 def Blood_flow(model):
-    agent_oxy = [agent.oxy for agent in model.schedule.agents if type(agent) is Endothelial]
+    agent_oxy = [agent.oxy for agent in model.schedule.agents if type(agent) is Endothelial and agent.pos in model.wound_coord]
     oxy_total = sum(agent_oxy)
-    return oxy_total/62550 *100
+    print(oxy_total)
+    return oxy_total/(len(model.wound_coord))
 
 def Collagen(model):
-    agent_coll = [agent.coll for agent in model.schedule.agents if type(agent) is Endothelial]
+    agent_coll = [agent.coll for agent in model.schedule.agents if type(agent) is Endothelial and agent.pos in model.wound_coord]
     coll_total = sum(agent_coll)
-    return coll_total/62550 * 100
+    return coll_total/len(model.wound_coord)
 
 def Fibroblast_count(model):
      fibroblast_count = 0
@@ -216,7 +219,7 @@ def loop_fig(fignum):
     return fignum + 1
 
 def run_model(step_count=100):
-    model = WoundModel(40,50,80,0.5,0,0,0,25,25,10,0.7)
+    model = WoundModel(20,50,80,0.5,0.5,0.5,0.5,25,25,10,0.7)
     for i in range(step_count):
         model.step()
     cell_concentrations = model.datacollector.get_model_vars_dataframe()
@@ -302,3 +305,48 @@ def run_model(step_count=100):
     plt.savefig('results/' + 'Collagen.png', format='png', dpi=500, bbox_inches='tight')
 
 #run_model()
+
+def run_calibration(step_count=120):
+    model = WoundModel(50,50,50,0.5,0.5,0.5,0.5,25,25,10,0.7)
+    for i in range(step_count):
+        model.step()
+    cell_concentrations = model.datacollector.get_model_vars_dataframe()
+
+
+    lw = 5
+    ls = 10
+    fs = 15
+    lfs = 15
+    ts = 15
+
+    n = loop_fig(1)
+    plt.figure(n)
+    plt.plot(cell_concentrations["Macrophages"], linewidth=lw, ls='-')
+    plt.plot(cell_concentrations["Neutrophils"], linewidth=lw, ls='-')
+    plt.plot(cell_concentrations["Fibroblasts"], linewidth=lw, ls='-')
+    plt.xlim(0,120)
+    plt.ylabel("concentration (Arbitrary units)", fontsize=fs)
+    plt.xlabel("Time (h)", fontsize=fs)
+
+    plt.legend({ 'Fibroblasts', 'Macrophages', 'Neutrophils', }, loc='best', fontsize=lfs)
+    plt.tick_params(labelsize=ls)
+    plt.tight_layout()
+    print('... Plotting macrophages')
+    plt.savefig('results/' + 'all.png', format='png', dpi=500, bbox_inches='tight')
+
+    n = loop_fig(n)
+    plt.figure(n)
+    plt.plot(cell_concentrations["Blood_flow"], linewidth=lw, ls='-')
+
+    plt.xlim(0, 120)
+    plt.ylabel("concentration (Arbitrary units)", fontsize=fs)
+    plt.xlabel("Time (h)", fontsize=fs)
+
+    plt.tick_params(labelsize=ls)
+    plt.tight_layout()
+    print('... Plotting macrophages')
+    plt.savefig('results/' + 'blood.png', format='png', dpi=500, bbox_inches='tight')
+    #plt.plot(cell_concentrations["Collagen"], linewidth=lw, ls='-')
+
+
+#run_calibration()

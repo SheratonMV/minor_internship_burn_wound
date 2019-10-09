@@ -508,7 +508,7 @@ def plot(wsol, df_AP_median, case_names, timein, t_interval, df_IL6, df_IL10, pa
         plt.legend(loc='best', fontsize=lfs)
         plt.xlim((0, prms._stoptime / 60.))
         plt.tick_params(labelsize=ls)
-        print('... Plotting Wound')
+        print('... Plotting PDGF')
         plt.savefig('result/plots/' + 'PDGF.png', format='png', dpi=500, bbox_inches='tight')
 
         n = loop_fig(n)
@@ -544,7 +544,7 @@ def plot(wsol, df_AP_median, case_names, timein, t_interval, df_IL6, df_IL10, pa
         plt.legend(loc='best', fontsize=lfs)
         plt.xlim((0, prms._stoptime / 60.))
         plt.tick_params(labelsize=ls)
-        print('... Plotting Collagen')
+        print('... Plotting MMP')
         plt.savefig('result/plots/' + 'MMP.png', format='png', dpi=500, bbox_inches='tight')
 
         n = loop_fig(n)

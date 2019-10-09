@@ -72,20 +72,19 @@ class Endothelial(Agent):
     def step(self):
 
         self.macrophage_time += 1
-        self.neutrophil_time += 1
         self.fibroblast_time += 1
 
-        if self.TNFa > 2 and self.oxy >= 25 and self.IL10 < 2 and self.macrophage_time > 6 and self.model.resting_macrophages > 1:
+        if self.TNFa > 2 and self.oxy >= 25 and self.IL10 < 1.5 and self.macrophage_time % 2 == 0 and self.model.resting_macrophages > 0 and self.coll <100:
             self.attract_macrophage()
             self.macrophage_time = 0
 
 
-        if self.TNFa > 2 and self.oxy >= 25 and self.IL6 > 1 and self.neutrophil_time > 2 and self.model.resting_neutrophils > 1:
+        if self.TNFa > 1 and self.oxy >= 25 and self.IL6 > 1 and self.model.resting_neutrophils > 0 and self.oxy<100:
             self.attract_neutrophil()
             self.neutrophil_time = 0
 
 
-        if self.TGFb > 5 and self.coll < 100 and self.fibroblast_time > 8  and self.model.resting_macrophages > 1:
+        if self.TGFb > 5 and self.coll < 100 and self.fibroblast_time % 8 == 0  and self.model.resting_fibroblasts > 0 :
             self.attract_fibroblast()
             self.fibroblast_time = 0
 
@@ -160,6 +159,8 @@ class Neutrophil(Agent):
                     possible_steps.remove(agent.pos)
                 elif agent.coll >= 100:
                     possible_steps.remove(agent.pos)
+                elif agent.oxy <= 20:
+                    possible_steps.remove(agent.pos)
         new_position = possible_steps
 
         if new_position != []:
@@ -215,7 +216,7 @@ class Neutrophil(Agent):
                 elif type(agent) is Endothelial:
                     agent.TNFa += 0.002
                     agent.oxy -= 5
-            print('boom')
+
 
     def step(self):
         """Step:
@@ -233,7 +234,8 @@ class Neutrophil(Agent):
             cellmates = self.model.grid.get_cell_list_contents([self.pos])
             for agent in cellmates:
                 if type(agent) is Endothelial:
-                    energy_loss_IL10 = agent.IL10 * 0.01
+                    energy_loss_IL10 = agent.IL10 *0.1
+
 
             self.energy = self.energy - 0.03 - energy_loss_IL10
 
@@ -305,7 +307,7 @@ class Macrophage(Agent):
         for agent in cellmates:
             if type(agent) == Neutrophil and agent.energy <= 0 and agent.apoptised == False:
                 agent.apoptised = True
-                print('kill motherfucker')
+
 
 
 
@@ -330,7 +332,7 @@ class Fibroblast(Agent):
         self.energy = 1
         self.pos = pos
         self.collagen = 1000
-        self.TGFb_production = 0.001
+        self.TGFb_production = 0.01
         self.collagen_secretion = 1
 
     def move(self):
@@ -400,7 +402,7 @@ class Fibroblast(Agent):
                         self.secrete_TGFb()
                         self.energy -= 0.005
 
-
+        #if self.model.col
 
 
 

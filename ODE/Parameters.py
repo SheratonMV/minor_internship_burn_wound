@@ -201,8 +201,10 @@ def collagen_vs_TGFB(x):
 
 def collagen_vs_collagen_density(x):
     #y = -4.33e-10 * x**3 - 9e-7 * x**2 - 0.00055 * x + 0.13
-    y = 0.142687 - 0.001062817 * x + 0.000002702629 * x **2 - 1.57215e-9 * x ** 3
+    y = 0.1378065 - 0.0005775911*x + 9.28343e-7*x**2 - 4.441029e-10*x**3
     return y
+
+
 
 def fibroblast_vs_PDGF(x):
     y = 5.302294 + 461.4242*x - 178.0119*x**2 + 17.17551*x**3
@@ -258,7 +260,7 @@ FIBRO0 = 20
 COLL0 = 10
 MMP0 = 7.1
 CM90 = 447
-PDGF0 = 2
+PDGF0 = 0.2
 
 rinduce = 0 * _day
 AP_Sinj = (1 * 5.6 * 80.) / (60. * 5)
@@ -268,7 +270,7 @@ step_max = 10 ** 100
 r_homeo = Pmin_NR - mu_NR
 
 time = 'min'
-_stoptime = 48. * 60.
+_stoptime = 100. * 60.
 _numpoints = 10000
 
 ITMtrans0 = 0
