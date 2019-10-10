@@ -159,7 +159,7 @@ class Neutrophil(Agent):
                     possible_steps.remove(agent.pos)
                 elif agent.coll >= 100:
                     possible_steps.remove(agent.pos)
-                elif agent.oxy <= 20:
+                elif agent.oxy <= 7:
                     possible_steps.remove(agent.pos)
         new_position = possible_steps
 

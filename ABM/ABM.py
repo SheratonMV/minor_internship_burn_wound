@@ -349,4 +349,4 @@ def run_calibration(step_count=120):
     #plt.plot(cell_concentrations["Collagen"], linewidth=lw, ls='-')
 
 
-#run_calibration()
+run_calibration()
