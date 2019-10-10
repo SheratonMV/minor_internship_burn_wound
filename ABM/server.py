@@ -81,9 +81,12 @@ def agent_portrayal(agent):
 
 grid = CanvasGrid(agent_portrayal, grid_width,grid_height, 500, 500)
 
+chart = ChartModule([{"Label": "Macrophages","Color": "Blue"}],data_collector_name='datacollector')
+chart2 = ChartModule([{"Label": "Fibroblasts","Color": "Orange"}],data_collector_name='datacollector')
+chart3 = ChartModule([{"Label": "Neutrophils","Color": "Green"}],data_collector_name='datacollector')
 
 server = ModularServer(WoundModel,
-                       [grid],
+                       [grid,chart3,chart,chart2],
                        "Burn Wound Healing Model",
                        {"Neutrophils": Neutrophil_slider, "Macrophages": Macrophage_slider, "Fibroblasts": Fibroblast_slider,"IL10": IL10_slider, "IL6": IL6_slider,"TNFa": TNFa_slider, "TGFb": TGFb_slider, "width": grid_width, "height": grid_height, "wound_radius": wound_size_slider, "coagulation": coagulation_slider})
 
