@@ -118,15 +118,14 @@ class WoundModel(Model):
         self.running = True
 
         self.datacollector = DataCollector(model_reporters={"Blood_flow": Blood_flow,"Collagen": Collagen, "Macrophages": Macrophage_count, "Neutrophils": Neutrophil_count, "Fibroblasts": Fibroblast_count})
-        print(len(self.wound_coord))
-        print(len(self.healthy))
+
 
 
 
     def blood_flow(self):
         agent_oxy = [agent.oxy for agent in self.schedule.agents if type(agent) is Endothelial]
         oxy_total = sum(agent_oxy)
-        return oxy_total / 62550 * 100
+        return oxy_total / 625
 
 
 
@@ -144,8 +143,7 @@ class WoundModel(Model):
         if self.timer % 8 == 0:
             self.resting_fibroblasts += 1
 
-        print(self.resting_neutrophils)
-        #cell_concentrations = self.datacollector.get_model_vars_dataframe()
+                #cell_concentrations = self.datacollector.get_model_vars_dataframe()
         #print(cell_concentrations)
 
 
@@ -156,7 +154,7 @@ class WoundModel(Model):
 def Blood_flow(model):
     agent_oxy = [agent.oxy for agent in model.schedule.agents if type(agent) is Endothelial and agent.pos in model.wound_coord]
     oxy_total = sum(agent_oxy)
-    print(oxy_total)
+
     return oxy_total/(len(model.wound_coord))
 
 def Collagen(model):
@@ -178,6 +176,15 @@ def Neutrophil_count(model):
             neutrophil_count += 1
      return neutrophil_count
 
+
+def Neutrophil_necrotic_count(model):
+    neutrophil_count = 0
+    for agent in model.schedule.agents:
+        if type(agent) is Neutrophil and agent.energy <= 0:
+            if not agent.apoptised:
+                neutrophil_count += 1
+    return neutrophil_count
+
 def Macrophage_count(model):
      macrophage_count = 0
      for agent in model.schedule.agents:
@@ -190,12 +197,12 @@ def batch_run(WoundModel):
 
     fixed_params = {
     "Neutrophils": 80,
-     "Macrophages": 80,
-     "Fibroblasts": 80,
-     "IL10": 0,
-     "IL6": 0,
-     "TNFa": 0,
-     "TGFb": 0,
+     "Macrophages": 50,
+     "Fibroblasts": 50,
+     "IL10": 0.5,
+     "IL6": 0.5,
+     "TNFa": 0.5,
+     "TGFb": 0.5,
      "width": 25,
      "height": 25,
      "wound_radius": 10,
@@ -205,12 +212,38 @@ def batch_run(WoundModel):
     batch_run = BatchRunner(
     WoundModel,variable_parameters=None,
     fixed_parameters = fixed_params,
-    max_steps=100,
+    max_steps=120,
     model_reporters={"Blood_flow": Blood_flow,"Collagen": Collagen, "Macrophages": Macrophage_count, "Neutrophils": Neutrophil_count, "Fibroblasts": Fibroblast_count}
     )
 
     batch_run.run_all()
+    run_dataAP = batch_run.get_model_vars_dataframe()
+
+    fixed_params = {
+        "Neutrophils": 80,
+        "Macrophages": 80,
+        "Fibroblasts": 80,
+        "IL10": 0.5,
+        "IL6": 0.5,
+        "TNFa": 0.5,
+        "TGFb": 0.5,
+        "width": 25,
+        "height": 25,
+        "wound_radius": 10,
+        "coagulation": 0.5
+    }
+
+    batch_run = BatchRunner(
+        WoundModel, variable_parameters=None,
+        fixed_parameters=fixed_params, iterations= 5,
+        max_steps=120,
+        model_reporters={"Blood_flow": Blood_flow, "Collagen": Collagen, "Macrophages": Macrophage_count,
+                         "Neutrophils": Neutrophil_count, "Fibroblasts": Fibroblast_count}
+    )
+
+    batch_run.run_all()
     run_data = batch_run.get_model_vars_dataframe()
+
     print(run_data)
 
 #batch_run(WoundModel)
@@ -218,14 +251,14 @@ def batch_run(WoundModel):
 def loop_fig(fignum):
     return fignum + 1
 
-def run_model(step_count=100):
-    model = WoundModel(20,50,80,0.5,0.5,0.5,0.5,25,25,10,0.7)
+def run_model(step_count=120):
+    model = WoundModel(50,50,50,1,1,1,1,25,25,10,0.5)
     for i in range(step_count):
         model.step()
     cell_concentrations = model.datacollector.get_model_vars_dataframe()
 
-
-    modelAP = WoundModel(80, 50, 80, 1, 0, 0, 0, 25, 25, 10, 0.7)
+    modelAP = WoundModel(75, 50, 50, 5, 0.25, 0.5, 0.5, 25, 25, 10, 0.5)
+    #modelAP = WoundModel(80, 50, 80, 1, 0, 0, 0, 25, 25, 10, 0.7)
     for i in range(step_count):
         modelAP.step()
     cell_concentrationsAP = modelAP.datacollector.get_model_vars_dataframe()
@@ -244,6 +277,7 @@ def run_model(step_count=100):
     plt.ylabel("Macrophages (Arbitrary units)", fontsize=fs)
     plt.xlabel("Time (h)", fontsize=fs)
     plt.title("Macrophages", fontsize=ts)
+    plt.ylim(0,100)
     plt.legend({ 'bIAP', 'Placebo'}, loc='best', fontsize=lfs)
     plt.tick_params(labelsize=ls)
     plt.tight_layout()
@@ -256,6 +290,7 @@ def run_model(step_count=100):
     plt.plot(cell_concentrationsAP["Neutrophils"], linewidth=lw, ls='-', color = "#4daf4a")
     plt.ylabel("Neutrophils (Arbitrary units)", fontsize=fs)
     plt.xlabel("Time (h)", fontsize=fs)
+    plt.ylim(0, 100)
     plt.legend({ 'bIAP', 'Placebo'}, loc='best', fontsize=lfs)
     plt.title("Neutrophils", fontsize=ts)
     plt.tick_params(labelsize=ls)
@@ -269,6 +304,7 @@ def run_model(step_count=100):
     plt.plot(cell_concentrationsAP["Fibroblasts"], linewidth=lw, ls='-', color = "#4daf4a" )
     plt.ylabel("Fibroblasts (Arbitrary units)", fontsize=fs)
     plt.xlabel("Time (h)", fontsize=fs)
+    plt.ylim(0, 100)
     plt.legend({ 'bIAP', 'Placebo'}, loc='best', fontsize=lfs)
     plt.title("Fibroblasts", fontsize=ts)
     plt.tick_params(labelsize=ls)
@@ -283,6 +319,7 @@ def run_model(step_count=100):
     plt.plot(cell_concentrationsAP["Blood_flow"], linewidth=lw, ls='-', color="#4daf4a")
     plt.ylabel("Oxygen (%)", fontsize=fs)
     plt.xlabel("Time (h)", fontsize=fs)
+    plt.ylim(0, 100)
     plt.legend({ 'bIAP', 'Placebo'}, loc='best', fontsize=lfs)
     plt.title("Oxygen in wound", fontsize=ts)
     plt.tick_params(labelsize=ls)
@@ -297,6 +334,7 @@ def run_model(step_count=100):
     plt.plot(cell_concentrationsAP["Collagen"], linewidth=lw, ls='-', color="#4daf4a")
     plt.ylabel("Collagen (%)", fontsize=fs)
     plt.xlabel("Time (h)", fontsize=fs)
+    plt.ylim(0, 100)
     plt.legend({ 'bIAP', 'Placebo'}, loc='best', fontsize=lfs)
     plt.title("Collagen % over whole wound", fontsize=ts)
     plt.tick_params(labelsize=ls)
@@ -307,7 +345,7 @@ def run_model(step_count=100):
 #run_model()
 
 def run_calibration(step_count=120):
-    model = WoundModel(50,50,50,0.5,0.5,0.5,0.5,25,25,10,0.7)
+    model = WoundModel(50,50,50,0.5,0.5,0.5,0.5,25,25,10,0.5)
     for i in range(step_count):
         model.step()
     cell_concentrations = model.datacollector.get_model_vars_dataframe()
@@ -325,7 +363,7 @@ def run_calibration(step_count=120):
     plt.plot(cell_concentrations["Neutrophils"], linewidth=lw, ls='-')
     plt.plot(cell_concentrations["Fibroblasts"], linewidth=lw, ls='-')
     plt.xlim(0,120)
-    plt.ylabel("concentration (Arbitrary units)", fontsize=fs)
+    plt.ylabel("Concentration (Arbitrary units)", fontsize=fs)
     plt.xlabel("Time (h)", fontsize=fs)
 
     plt.legend({ 'Fibroblasts', 'Macrophages', 'Neutrophils', }, loc='best', fontsize=lfs)
@@ -336,10 +374,11 @@ def run_calibration(step_count=120):
 
     n = loop_fig(n)
     plt.figure(n)
-    plt.plot(cell_concentrations["Blood_flow"], linewidth=lw, ls='-')
-
+    plt.plot(cell_concentrations["Blood_flow"], linewidth=lw, ls='-', color = 'red')
+    plt.plot(cell_concentrations["Collagen"], linewidth=lw, ls='-', color = 'black')
+    plt.legend({'Oxygen', 'Collagen' }, loc='best', fontsize=lfs)
     plt.xlim(0, 120)
-    plt.ylabel("concentration (Arbitrary units)", fontsize=fs)
+    plt.ylabel("Concentration (Arbitrary units)", fontsize=fs)
     plt.xlabel("Time (h)", fontsize=fs)
 
     plt.tick_params(labelsize=ls)
@@ -349,4 +388,4 @@ def run_calibration(step_count=120):
     #plt.plot(cell_concentrations["Collagen"], linewidth=lw, ls='-')
 
 
-run_calibration()
+#run_calibration()

@@ -74,12 +74,12 @@ class Endothelial(Agent):
         self.macrophage_time += 1
         self.fibroblast_time += 1
 
-        if self.TNFa > 2 and self.oxy >= 25 and self.IL10 < 1.5 and self.macrophage_time % 2 == 0 and self.model.resting_macrophages > 0 and self.coll <100:
+        if self.TNFa > 2 and self.oxy >= 25 and self.IL10 < 1.5 and self.macrophage_time % 2 == 0 and self.model.resting_macrophages > 0 and self.coll <100 :
             self.attract_macrophage()
             self.macrophage_time = 0
 
 
-        if self.TNFa > 1 and self.oxy >= 25 and self.IL6 > 1 and self.model.resting_neutrophils > 0 and self.oxy<100:
+        if self.TNFa > 1 and self.oxy >= 25 and self.IL6 > 1 and self.model.resting_neutrophils > 0 and self.oxy<100 and self.model.blood_flow() < 80:
             self.attract_neutrophil()
             self.neutrophil_time = 0
 
@@ -192,13 +192,13 @@ class Neutrophil(Agent):
                     if agent.oxy >= 100:
                         pass
                     else:
-                        agent.oxy += 1
+                        agent.oxy += 2
             elif type(agent) is Endothelial:
                 if self.energy > 0:
                     if agent.oxy >= 100:
                         pass
                     else:
-                        agent.oxy += 1
+                        agent.oxy += 2
 
             if type(agent) is Macrophage:
                 if self.energy == 0:
@@ -212,10 +212,10 @@ class Neutrophil(Agent):
                 if type(agent) is Endothelial and agent.pos == self.pos:
                     # agent.TNFa += 0.01 - agent.IL10*0.01 - agent.TGFb* 0.01 + agent.IL6*0.01
                     agent.TNFa += 0.004
-                    agent.oxy -= 10
+                    agent.oxy -= 5
                 elif type(agent) is Endothelial:
                     agent.TNFa += 0.002
-                    agent.oxy -= 5
+                    agent.oxy -= 2
 
 
     def step(self):
@@ -234,7 +234,7 @@ class Neutrophil(Agent):
             cellmates = self.model.grid.get_cell_list_contents([self.pos])
             for agent in cellmates:
                 if type(agent) is Endothelial:
-                    energy_loss_IL10 = agent.IL10 *0.1
+                    energy_loss_IL10 = agent.IL10 *0.01
 
 
             self.energy = self.energy - 0.03 - energy_loss_IL10
@@ -288,7 +288,7 @@ class Macrophage(Agent):
                     if agent.oxy >= 100:
                         pass
                     else:
-                        agent.oxy += 1
+                        agent.oxy += 2
                     counter = counter + 2
                     modulation = modulation + agent.TNFa + agent.IL6
             if modulation / counter > 2:
@@ -362,7 +362,7 @@ class Fibroblast(Agent):
                 IL6_neigbors += [agent.IL6]
 
         #actually 1+ deactivating cytokines but not included in this model
-        Collagen_stimulation_factor = m.log((1 + sum(TGFb_neigbors)/9 + sum(IL6_neigbors)/9)/1)
+        Collagen_stimulation_factor = 2 * m.log((1 + sum(TGFb_neigbors)/9 + sum(IL6_neigbors)/9)/1)
 
 
         for agent in neighbors:

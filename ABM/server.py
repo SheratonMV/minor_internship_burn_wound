@@ -10,13 +10,13 @@ from agents import *
 
 Neutrophil_slider = UserSettableParameter('slider', "Number of Neutrophils", 50, 1, 100, 1)
 Macrophage_slider = UserSettableParameter('slider', "Number of Macrophages", 50, 1, 100, 1)
-Fibroblast_slider = UserSettableParameter('slider', "Number of Fibroblasts", 100, 1, 200, 1)
+Fibroblast_slider = UserSettableParameter('slider', "Number of Fibroblasts", 50, 1, 200, 1)
 wound_size_slider = UserSettableParameter('slider', 'Wound Radius',10,1,10,1)
 coagulation_slider = UserSettableParameter('slider', 'Proportion of Coagulation', 0.7, 0, 1, 0.1)
-IL10_slider = UserSettableParameter('slider', 'Initial IL-10', 0, 0, 1, 0.1)
-IL6_slider = UserSettableParameter('slider', 'Initial IL6', 0, 0, 1, 0.1)
-TNFa_slider = UserSettableParameter('slider', 'Initial TNFa', 0, 0, 1, 0.1)
-TGFb_slider = UserSettableParameter('slider', 'Initial TGFb', 0, 0, 1, 0.1)
+IL10_slider = UserSettableParameter('slider', 'Initial IL-10', 0.5, 0, 1, 0.1)
+IL6_slider = UserSettableParameter('slider', 'Initial IL6', 0.5, 0, 1, 0.1)
+TNFa_slider = UserSettableParameter('slider', 'Initial TNFa', 0.5, 0, 1, 0.1)
+TGFb_slider = UserSettableParameter('slider', 'Initial TGFb', 0.5, 0, 1, 0.1)
 grid_width = 25
 grid_height = 25
 
