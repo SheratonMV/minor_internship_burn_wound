@@ -125,7 +125,7 @@ class WoundModel(Model):
     def blood_flow(self):
         agent_oxy = [agent.oxy for agent in self.schedule.agents if type(agent) is Endothelial]
         oxy_total = sum(agent_oxy)
-        return oxy_total / 625
+        return oxy_total / len(self.all_coordinates)
 
 
 
@@ -252,12 +252,12 @@ def loop_fig(fignum):
     return fignum + 1
 
 def run_model(step_count=120):
-    model = WoundModel(50,50,50,1,1,1,1,25,25,10,0.5)
+    model = WoundModel(50,50,50,0.5,0.5,0.5,0.5,25,25,10,0.5)
     for i in range(step_count):
         model.step()
     cell_concentrations = model.datacollector.get_model_vars_dataframe()
 
-    modelAP = WoundModel(75, 50, 50, 5, 0.25, 0.5, 0.5, 25, 25, 10, 0.5)
+    modelAP = WoundModel(80, 50, 50, 4, 0.0, 0.5, 0.5, 25, 25, 10, 0.5)
     #modelAP = WoundModel(80, 50, 80, 1, 0, 0, 0, 25, 25, 10, 0.7)
     for i in range(step_count):
         modelAP.step()
@@ -342,7 +342,7 @@ def run_model(step_count=120):
     print('... Plotting collagen')
     plt.savefig('results/' + 'Collagen.png', format='png', dpi=500, bbox_inches='tight')
 
-#run_model()
+run_model()
 
 def run_calibration(step_count=120):
     model = WoundModel(50,50,50,0.5,0.5,0.5,0.5,25,25,10,0.5)

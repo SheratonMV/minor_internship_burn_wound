@@ -79,7 +79,7 @@ class Endothelial(Agent):
             self.macrophage_time = 0
 
 
-        if self.TNFa > 1 and self.oxy >= 25 and self.IL6 > 1 and self.model.resting_neutrophils > 0 and self.oxy<100 and self.model.blood_flow() < 80:
+        if self.TNFa > 1 and self.oxy >= 25 and self.IL6 > 1 and self.model.resting_neutrophils > 0 and self.oxy<100  and self.model.blood_flow() <90:
             self.attract_neutrophil()
             self.neutrophil_time = 0
 
@@ -192,13 +192,13 @@ class Neutrophil(Agent):
                     if agent.oxy >= 100:
                         pass
                     else:
-                        agent.oxy += 2
+                        agent.oxy += 1
             elif type(agent) is Endothelial:
                 if self.energy > 0:
                     if agent.oxy >= 100:
                         pass
                     else:
-                        agent.oxy += 2
+                        agent.oxy += 1
 
             if type(agent) is Macrophage:
                 if self.energy == 0:
@@ -288,7 +288,7 @@ class Macrophage(Agent):
                     if agent.oxy >= 100:
                         pass
                     else:
-                        agent.oxy += 2
+                        agent.oxy += 1
                     counter = counter + 2
                     modulation = modulation + agent.TNFa + agent.IL6
             if modulation / counter > 2:
