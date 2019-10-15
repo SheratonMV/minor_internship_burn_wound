@@ -7,9 +7,9 @@ import math as m
 class Endothelial(Agent):
     """" An Endotheial non-mobile agent imbedded in the grid-space of the model.
     variables:
-    oxy -> oxygen level of the epithelial cell ranging from 0 to 25 (indicates the 'health' status)
+    oxy -> oxygen level of the epithelial cell ranging from 0 to 100 (indicates the 'health' status)
     Oxy simulates the effect of downstream ischemia
-    other celltypes can spawn on this part of the grid whenever oxy = 25
+    other celltypes can spawn on this part of the grid whenever oxy > 25
     """
 
     def __init__(self, unique_id, pos, oxy,coll, IL10, IL6,TNFa, TGFb, model):
@@ -21,18 +21,26 @@ class Endothelial(Agent):
         self.TGFb = TGFb
         self.TNFa = TNFa
         self.coll = coll
-        self.neutrophil_time = 0
-        self.macrophage_time = 0
-        self.fibroblast_time = 0
 
 
+    def attract_cells(self):
+        if self.TNFa > 2 and self.oxy >= 25 and self.IL10 < 1.5 and self.model.timer % 2 == 0 and self.model.resting_macrophages > 0 and self.coll < 100:
+            self.attract_macrophage()
+            self.macrophage_time = 0
+
+        if self.TNFa > 0.5 and self.oxy >= 25 and self.IL6 > 0.5 and self.model.resting_neutrophils > 0 and self.oxy < 100 and self.model.blood_flow() < 80:
+            self.attract_neutrophil()
+            self.neutrophil_time = 0
+
+        if self.TGFb > 5 and self.coll < 100 and self.model.timer % 8 == 0 and self.model.resting_fibroblasts > 0:
+            self.attract_fibroblast()
+            self.fibroblast_time = 0
 
     def attract_neutrophil(self):
         a = Neutrophil(self.model.next_id(), self.pos, self.model.centre, self.model)
         self.model.schedule.add(a)
         self.model.grid.place_agent(a, self.pos)
         self.model.resting_neutrophils -= 1
-
 
     def attract_macrophage(self):
         a = Macrophage(self.model.next_id(), self.pos, self.model)
@@ -47,47 +55,48 @@ class Endothelial(Agent):
         self.model.resting_fibroblasts -= 1
 
     def decay_cytokines(self):
-        # decay of cytokines
-        if self.IL6 <= 0:
+
+        if self.IL6 <= 0.02:
             self.IL6 = 0
         else:
             self.IL6 -= 0.02
 
-        if self.IL10 <= 0:
+        if self.IL10 <= 0.02:
             self.IL10 = 0
         else:
             self.IL10 -= 0.02
 
-        if self.TNFa <= 0:
+        if self.TNFa <= 0.02:
             self.TNFa = 0
         else:
             self.TNFa -= 0.02
 
-        if self.TGFb <= 0:
+        if self.TGFb <= 0.02:
             self.TGFb = 0
         else:
             self.TGFb -= 0.02
 
+    def heal_oxygen(self):
+        """If oxygen of all neighbors is healed, the oxygen will regenerate itself."""
+        neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=True)
+        neighbors_oxy = [agent.oxy for agent in neighbors if type(agent) is Endothelial]
+        neighbors_oxy = sum(neighbors_oxy)
+        if neighbors_oxy >= 700 and self.oxy < 100:
+            self.oxy += 10
+            if self.oxy > 100:
+                self.oxy = 100
+
+        neighbors_coll = [agent.coll for agent in neighbors if type(agent) is Endothelial]
+        neighbors_coll = sum(neighbors_coll)
+        if neighbors_coll >= 700 and self.oxy < 100:
+            self.coll += 10
+            if self.coll > 100:
+                self.coll = 100
+
 
     def step(self):
-
-        self.macrophage_time += 1
-        self.fibroblast_time += 1
-
-        if self.TNFa > 2 and self.oxy >= 25 and self.IL10 < 1.5 and self.macrophage_time % 2 == 0 and self.model.resting_macrophages > 0 and self.coll <100 :
-            self.attract_macrophage()
-            self.macrophage_time = 0
-
-
-        if self.TNFa > 1 and self.oxy >= 25 and self.IL6 > 1 and self.model.resting_neutrophils > 0 and self.oxy<100  and self.model.blood_flow() <90:
-            self.attract_neutrophil()
-            self.neutrophil_time = 0
-
-
-        if self.TGFb > 5 and self.coll < 100 and self.fibroblast_time % 8 == 0  and self.model.resting_fibroblasts > 0 :
-            self.attract_fibroblast()
-            self.fibroblast_time = 0
-
+        self.heal_oxygen()
+        self.attract_cells()
         self.decay_cytokines()
 
 
@@ -169,6 +178,7 @@ class Neutrophil(Agent):
 
 
 
+
     def update_cytokines(self):
         """" Updates Cytokine levels of all neighbours """
         neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=True)
@@ -192,7 +202,7 @@ class Neutrophil(Agent):
                     if agent.oxy >= 100:
                         pass
                     else:
-                        agent.oxy += 1
+                        agent.oxy += 2
             elif type(agent) is Endothelial:
                 if self.energy > 0:
                     if agent.oxy >= 100:
@@ -206,7 +216,7 @@ class Neutrophil(Agent):
 
     def necrosis(self):
         self.apoptotic_hours += 1
-        if self.apoptotic_hours == 5 and self.apoptised == False:
+        if self.apoptotic_hours == 5:
             neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=True)
             for agent in neighbors:
                 if type(agent) is Endothelial and agent.pos == self.pos:
@@ -216,16 +226,19 @@ class Neutrophil(Agent):
                 elif type(agent) is Endothelial:
                     agent.TNFa += 0.002
                     agent.oxy -= 2
-
+        if self.apoptotic_hours == 10:
+            self.apoptised = True
 
     def step(self):
         """Step:
         if energy < 0: neutrophil is considered apoptised"""
 
-
-        if self.energy <= 0:
+        if self.apoptised:
+            pass
+        elif self.energy <= 0 and not self.apoptised:
             self.necrosis()
         else:
+
             self.move()
             self.update_cytokines()
             self.heal()
@@ -235,6 +248,7 @@ class Neutrophil(Agent):
             for agent in cellmates:
                 if type(agent) is Endothelial:
                     energy_loss_IL10 = agent.IL10 *0.01
+
 
 
             self.energy = self.energy - 0.03 - energy_loss_IL10
@@ -305,8 +319,9 @@ class Macrophage(Agent):
     def apoptise_neutrophil(self):
         cellmates = self.model.grid.get_cell_list_contents([self.pos])
         for agent in cellmates:
-            if type(agent) == Neutrophil and agent.energy <= 0 and agent.apoptised == False:
+            if type(agent) == Neutrophil and agent.energy <= 0 and not agent.apoptised:
                 agent.apoptised = True
+
 
 
 
@@ -347,8 +362,19 @@ class Fibroblast(Agent):
                 elif agent.oxy < 25:
                     possible_steps.remove(agent.pos)
 
+
         if possible_steps != []:
             new_position = self.random.choice(possible_steps)
+            self.model.grid.move_agent(self, new_position)
+        else:
+            possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False)
+            agent_TGFb = [agent.TGFb for agent in neighbors if type(agent) is Endothelial]
+            new = [agent.pos for agent in neighbors if type(agent) is Endothelial and agent.TGFb == max(agent_TGFb)][0]
+
+            nodes = np.asarray(possible_steps)
+            deltas = nodes - new
+            dist_2 = np.einsum('ij,ij->i', deltas, deltas)
+            new_position = possible_steps[np.argmin(dist_2)]
             self.model.grid.move_agent(self, new_position)
 
     def secrete_collagen(self):
@@ -402,7 +428,11 @@ class Fibroblast(Agent):
                         self.secrete_TGFb()
                         self.energy -= 0.005
 
-        #if self.model.col
+
+        #When the wound is repaired fibroblasts are apoptised
+        if self.model.Collagen() > 100:
+            self.energy -= 0.03
+
 
 
 

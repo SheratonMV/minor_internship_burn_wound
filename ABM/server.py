@@ -10,7 +10,7 @@ from agents import *
 
 Neutrophil_slider = UserSettableParameter('slider', "Number of Neutrophils", 50, 1, 100, 1)
 Macrophage_slider = UserSettableParameter('slider', "Number of Macrophages", 50, 1, 100, 1)
-Fibroblast_slider = UserSettableParameter('slider', "Number of Fibroblasts", 50, 1, 200, 1)
+Fibroblast_slider = UserSettableParameter('slider', "Number of Fibroblasts", 60, 1, 200, 1)
 wound_size_slider = UserSettableParameter('slider', 'Wound Radius',10,1,10,1)
 coagulation_slider = UserSettableParameter('slider', 'Proportion of Coagulation', 0.7, 0, 1, 0.1)
 IL10_slider = UserSettableParameter('slider', 'Initial IL-10', 0.5, 0, 1, 0.1)
@@ -26,7 +26,7 @@ def agent_portrayal(agent):
                  "w": 1, "h": 1}
 
     if type(agent) is Endothelial:
-        if agent.oxy >= 25 and agent.coll >= 100:
+        if agent.oxy >= 25 and agent.coll == 100:
 
             portrayal["Color"] = "tan"
             portrayal["Layer"] = 0
@@ -84,9 +84,11 @@ grid = CanvasGrid(agent_portrayal, grid_width,grid_height, 500, 500)
 chart = ChartModule([{"Label": "Macrophages","Color": "Blue"}],data_collector_name='datacollector')
 chart2 = ChartModule([{"Label": "Fibroblasts","Color": "Orange"}],data_collector_name='datacollector')
 chart3 = ChartModule([{"Label": "Neutrophils","Color": "Green"}],data_collector_name='datacollector')
+chart4 = ChartModule([{"Label": "Necrotic_neutrophils","Color": "Green"}],data_collector_name='datacollector')
+chart5 = ChartModule([{"Label": "Apoptised_neutrophils","Color": "Green"}],data_collector_name='datacollector')
 
 server = ModularServer(WoundModel,
-                       [grid,chart3,chart,chart2],
+                       [grid,chart3, chart4, chart5,chart,chart2],
                        "Burn Wound Healing Model",
                        {"Neutrophils": Neutrophil_slider, "Macrophages": Macrophage_slider, "Fibroblasts": Fibroblast_slider,"IL10": IL10_slider, "IL6": IL6_slider,"TNFa": TNFa_slider, "TGFb": TGFb_slider, "width": grid_width, "height": grid_height, "wound_radius": wound_size_slider, "coagulation": coagulation_slider})
 
