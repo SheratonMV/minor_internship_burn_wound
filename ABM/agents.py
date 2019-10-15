@@ -86,12 +86,12 @@ class Endothelial(Agent):
             if self.oxy > 100:
                 self.oxy = 100
 
-        neighbors_coll = [agent.coll for agent in neighbors if type(agent) is Endothelial]
-        neighbors_coll = sum(neighbors_coll)
-        if neighbors_coll >= 700 and self.oxy < 100:
-            self.coll += 10
-            if self.coll > 100:
-                self.coll = 100
+        #neighbors_coll = [agent.coll for agent in neighbors if type(agent) is Endothelial]
+        #neighbors_coll = sum(neighbors_coll)
+        #if neighbors_coll >= 700 and self.oxy < 100:
+         #   self.coll += 10
+          #  if self.coll > 100:
+           #     self.coll = 100
 
 
     def step(self):
@@ -175,7 +175,17 @@ class Neutrophil(Agent):
         if new_position != []:
             new_position = self.random.choice(new_position)
             self.model.grid.move_agent(self, new_position)
+        else:
+            neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=True)
+            possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=True)
+            agent_attractant = [agent.TNFa + agent.IL6 for agent in neighbors if type(agent) is Endothelial]
+            new_position = [agent.pos for agent in neighbors if type(agent) is Endothelial and agent.TNFa + agent.IL6 == max(agent_attractant)][0]
 
+            nodes = np.asarray(possible_steps)
+            deltas = nodes - new_position
+            dist_2 = np.einsum('ij,ij->i', deltas, deltas)
+            new_position = possible_steps[np.argmin(dist_2)]
+            self.model.grid.move_agent(self, new_position)
 
 
 
@@ -276,18 +286,33 @@ class Macrophage(Agent):
 
         # only migration over the non-wounded areas.
         for agent in neighbors:
-            if type(agent) is Endothelial:
+            if type(agent) is Neutrophil and agent.energy <=0 and not agent.apoptised:
+                possible_steps = [agent.pos]
+
+            elif type(agent) is Endothelial:
                 if agent.oxy < 20:
                     possible_steps.remove(agent.pos)
                 elif agent.coll >= 100:
                     possible_steps.remove(agent.pos)
 
 
-        if possible_steps == []:
-            pass
-        else:
+        if possible_steps != []:
             new_position = self.random.choice(possible_steps)
             self.model.grid.move_agent(self, new_position)
+
+        else:
+            neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=True)
+            possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=True)
+            agent_attractant = [agent.TNFa + agent.IL6 for agent in neighbors if type(agent) is Endothelial]
+            new_position = [agent.pos for agent in neighbors if type(agent) is Endothelial and agent.TNFa + agent.IL6 == max(agent_attractant)][0]
+
+            nodes = np.asarray(possible_steps)
+            deltas = nodes - new_position
+            dist_2 = np.einsum('ij,ij->i', deltas, deltas)
+            new_position = possible_steps[np.argmin(dist_2)]
+            self.model.grid.move_agent(self, new_position)
+
+
 
     def secrete(self):
         neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=True)
