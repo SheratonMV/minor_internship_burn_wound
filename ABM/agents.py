@@ -412,7 +412,8 @@ class Fibroblast(Agent):
                         self.secrete_TGFb()
                         self.energy -= 0.005
 
-        #if self.model.col
+        if self.model.Collagen() > 100:
+            self.energy -=0.1
 
 
 

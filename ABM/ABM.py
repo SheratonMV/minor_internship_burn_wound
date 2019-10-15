@@ -13,6 +13,7 @@ from coordinates import *
 from schedule import RandomActivationByAgent
 from mesa.batchrunner import BatchRunner
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 class WoundModel(Model):
@@ -117,7 +118,7 @@ class WoundModel(Model):
 
         self.running = True
 
-        self.datacollector = DataCollector(model_reporters={"Blood_flow": Blood_flow,"Collagen": Collagen, "Macrophages": Macrophage_count, "Neutrophils": Neutrophil_count, "Fibroblasts": Fibroblast_count})
+        self.datacollector = DataCollector(model_reporters={"Blood_flow": Blood_flow,"Collagen": Collagen, "Macrophages": Macrophage_count, "Neutrophils": Neutrophil_count, "Fibroblasts": Fibroblast_count, "TGFb": TGFb_heat})
 
 
 
@@ -127,7 +128,10 @@ class WoundModel(Model):
         oxy_total = sum(agent_oxy)
         return oxy_total / len(self.all_coordinates)
 
-
+    def Collagen(self):
+        agent_coll = [agent.coll for agent in self.schedule.agents if type(agent) is Endothelial]
+        coll_total = sum(agent_coll)
+        return coll_total / len(self.all_coordinates)
 
     def step(self):
         self.schedule.step()
@@ -191,6 +195,15 @@ def Macrophage_count(model):
          if type(agent) is Macrophage and agent.energy > 0:
             macrophage_count += 1
      return macrophage_count
+
+def TGFb_heat(model):
+    T_map = []
+    for agent in model.schedule.agents:
+        if type(agent) is Endothelial:
+            T_map.append([agent.pos, agent.TGFb])
+
+    return np.array(T_map)
+
 
 
 def batch_run(WoundModel):
@@ -389,3 +402,35 @@ def run_calibration(step_count=120):
 
 
 #run_calibration()
+
+def heat_map(step_count=120):
+    model = WoundModel(50,50,50,0.5,0.5,0.5,0.5,25,25,10,0.5)
+    for i in range(step_count):
+        model.step()
+    cell_concentrations = model.datacollector.get_model_vars_dataframe()
+
+
+    lw = 5
+    ls = 10
+    fs = 15
+    lfs = 15
+    ts = 15
+
+    #n = loop_fig(1)
+    #plt.figure(n)
+    #plt.plot(cell_concentrations["TGFb"], linewidth=lw, ls='-')
+    #plt.savefig('results/' + 'TGFb.png', format='png', dpi=500, bbox_inches='tight')
+    TG_map = cell_concentrations["TGFb"][119]
+    Tmap = np.zeros((25,25))
+    for x in TG_map:
+        a, b = x[0][0],x[0][1]
+        Tmap[a,b] = x[1]
+    #plt.show()
+    print(Tmap)
+    plt.imshow(Tmap, cmap="hot")
+    plt.savefig('results/' + 'tgfb.png', format='png', dpi=500, bbox_inches='tight')
+
+
+    
+    
+heat_map()
