@@ -122,7 +122,7 @@ class WoundModel(Model):
 
         self.running = True
 
-        self.datacollector = DataCollector(model_reporters={"Blood_flow": Blood_flow,"Collagen": Collagen, "Macrophages": Macrophage_count, "Neutrophils": Neutrophil_count, "Fibroblasts": Fibroblast_count, "Necrotic_neutrophils": Neutrophil_necrotic_count,"Apoptised_neutrophils": Neutrophil_apoptised_count, "TGFb": TGFb_heat})
+        self.datacollector = DataCollector(model_reporters={"Blood_flow": Blood_flow,"Collagen": Collagen, "Macrophages": Macrophage_count, "Neutrophils": Neutrophil_count, "Fibroblasts": Fibroblast_count, "Necrotic_neutrophils": Neutrophil_necrotic_count,"Apoptised_neutrophils": Neutrophil_apoptised_count,"Phagocytized_neutrophils":Neutrophil_phagocytized_count, "TGFb": TGFb_heatmap, "IL6": IL6_heatmap, "IL10": IL10_heatmap, "TNFa": TNFa_heatmap })
 
 
 
@@ -152,8 +152,7 @@ class WoundModel(Model):
         if self.timer % 8 == 0:
             self.resting_fibroblasts += 1
 
-                #cell_concentrations = self.datacollector.get_model_vars_dataframe()
-        #print(cell_concentrations)
+
 
 
 
@@ -189,14 +188,21 @@ def Neutrophil_necrotic_count(model):
     neutrophil_count = 0
     for agent in model.schedule.agents:
         if type(agent) is Neutrophil and agent.energy <= 0:
-            if not agent.apoptised and agent.apoptotic_hours > 5:
+            if not agent.phagocytized and agent.apoptotic_hours >= 5:
                 neutrophil_count += 1
     return neutrophil_count
 
 def Neutrophil_apoptised_count(model):
     neutrophil_count = 0
     for agent in model.schedule.agents:
-        if type(agent) is Neutrophil and agent.apoptised:
+        if type(agent) is Neutrophil and agent.energy <= 0 and not agent.phagocytized and agent.apoptotic_hours < 5:
+                neutrophil_count += 1
+    return neutrophil_count
+
+def Neutrophil_phagocytized_count(model):
+    neutrophil_count = 0
+    for agent in model.schedule.agents:
+        if type(agent) is Neutrophil and agent.phagocytized:
                 neutrophil_count += 1
     return neutrophil_count
 
@@ -207,14 +213,42 @@ def Macrophage_count(model):
             macrophage_count += 1
      return macrophage_count
 
-def TGFb_heat(model):
-    T_map = []
+def TGFb_heatmap(model):
+    TGFB_map = []
     for agent in model.schedule.agents:
         if type(agent) is Endothelial:
-            T_map.append([agent.pos, agent.TGFb])
+            TGFB_map.append([agent.pos, agent.TGFb])
 
-    return np.array(T_map)
+    return np.array(TGFB_map)
 
+def IL6_heatmap(model):
+    IL6_map = []
+    for agent in model.schedule.agents:
+        if type(agent) is Endothelial:
+            IL6_map.append([agent.pos, agent.IL6])
+
+    return np.array(IL6_map)
+
+def IL10_heatmap(model):
+    IL10_map = []
+    for agent in model.schedule.agents:
+        if type(agent) is Endothelial:
+            IL10_map.append([agent.pos, agent.IL10])
+
+    return np.array(IL10_map)
+
+def TNFa_heatmap(model):
+    TNFa_map = []
+    for agent in model.schedule.agents:
+        if type(agent) is Endothelial:
+            TNFa_map.append([agent.pos, agent.TNFa])
+
+    return np.array(TNFa_map)
+
+
+
+
+#different runs
 def batch_run(WoundModel):
 
     fixed_params = {
@@ -266,31 +300,25 @@ def batch_run(WoundModel):
     batch_run.run_all()
     run_data = batch_run.get_model_vars_dataframe()
 
-    print(run_data)
 
-#batch_run(WoundModel)
 
-def loop_fig(fignum):
-    return fignum + 1
-
-def run_model(step_count=120):
+def AP_vs_not_model(step_count=120):
     model = WoundModel(50,50,50,0.5,0.5,0.5,0.5,25,25,10,0.5)
     for i in range(step_count):
         model.step()
     cell_concentrations = model.datacollector.get_model_vars_dataframe()
 
     modelAP = WoundModel(80, 50, 50, 4, 0.0, 0.5, 0.5, 25, 25, 10, 0.5)
-    #modelAP = WoundModel(80, 50, 80, 1, 0, 0, 0, 25, 25, 10, 0.7)
     for i in range(step_count):
         modelAP.step()
     cell_concentrationsAP = modelAP.datacollector.get_model_vars_dataframe()
 
 
-    lw = 5
-    ls = 20
-    fs = 25
-    lfs = 25
-    ts = 30
+    lw = 5 #Linewidth
+    ls = 20 #Labelsize
+    fs = 25 #Fontsize
+    lfs = 25 #Fontsize legend
+    ts = 30 #Title size
 
     n = loop_fig(1)
     plt.figure(n)
@@ -393,8 +421,77 @@ def run_model(step_count=120):
     plt.title("TGFb", fontsize=ts)
     plt.savefig('results/' + 'tgfbAP.png', format='png', dpi=500, bbox_inches='tight')
 
+    n = loop_fig(n)
+    plt.figure(n)
+    TG_map = cell_concentrations["IL6"][119]
+    Tmap = np.zeros((25, 25))
+    for x in TG_map:
+        a, b = x[0][0], x[0][1]
+        Tmap[a, b] = x[1]
+    # plt.show()
+    plt.imshow(Tmap, cmap="hot")
+    plt.title("IL-6", fontsize=ts)
+    plt.savefig('results/' + 'IL6.png', format='png', dpi=500, bbox_inches='tight')
 
-#run_model()
+    n = loop_fig(n)
+    plt.figure(n)
+    TG_map = cell_concentrationsAP["IL6"][119]
+    Tmap = np.zeros((25, 25))
+    for x in TG_map:
+        a, b = x[0][0], x[0][1]
+        Tmap[a, b] = x[1]
+    # plt.show()
+    plt.imshow(Tmap, cmap="hot")
+    plt.title("IL-6", fontsize=ts)
+    plt.savefig('results/' + 'IL10AP.png', format='png', dpi=500, bbox_inches='tight')
+
+    n = loop_fig(n)
+    plt.figure(n)
+    TG_map = cell_concentrations["IL10"][119]
+    Tmap = np.zeros((25, 25))
+    for x in TG_map:
+        a, b = x[0][0], x[0][1]
+        Tmap[a, b] = x[1]
+    # plt.show()
+    plt.imshow(Tmap, cmap="hot")
+    plt.title("IL-10", fontsize=ts)
+    plt.savefig('results/' + 'IL10.png', format='png', dpi=500, bbox_inches='tight')
+
+    n = loop_fig(n)
+    plt.figure(n)
+    TG_map = cell_concentrationsAP["IL10"][119]
+    Tmap = np.zeros((25, 25))
+    for x in TG_map:
+        a, b = x[0][0], x[0][1]
+        Tmap[a, b] = x[1]
+    # plt.show()
+    plt.imshow(Tmap, cmap="hot")
+    plt.title("IL-10", fontsize=ts)
+    plt.savefig('results/' + 'IL-10AP.png', format='png', dpi=500, bbox_inches='tight')
+
+    n = loop_fig(n)
+    plt.figure(n)
+    TG_map = cell_concentrations["TNFa"][119]
+    Tmap = np.zeros((25, 25))
+    for x in TG_map:
+        a, b = x[0][0], x[0][1]
+        Tmap[a, b] = x[1]
+    # plt.show()
+    plt.imshow(Tmap, cmap="hot")
+    plt.title("TNFa", fontsize=ts)
+    plt.savefig('results/' + 'TNFa.png', format='png', dpi=500, bbox_inches='tight')
+
+    n = loop_fig(n)
+    plt.figure(n)
+    TG_map = cell_concentrationsAP["TNFa"][119]
+    Tmap = np.zeros((25, 25))
+    for x in TG_map:
+        a, b = x[0][0], x[0][1]
+        Tmap[a, b] = x[1]
+    # plt.show()
+    plt.imshow(Tmap, cmap="hot")
+    plt.title("TNFa", fontsize=ts)
+    plt.savefig('results/' + 'TNFaAP.png', format='png', dpi=500, bbox_inches='tight')
 
 def run_calibration(step_count=120):
     model = WoundModel(50,50,50,0.5,0.5,0.5,0.5,25,25,10,0.5)
@@ -403,11 +500,12 @@ def run_calibration(step_count=120):
     cell_concentrations = model.datacollector.get_model_vars_dataframe()
 
 
-    lw = 5
-    ls = 10
-    fs = 15
-    lfs = 15
-    ts = 15
+    lw = 5  # Linewidth
+    ls = 10 # Labelsize
+    fs = 15 # Fontsize
+    lfs = 15 # Fontsize legend
+    ts = 15 # Title size
+
 
     n = loop_fig(1)
     plt.figure(n)
@@ -439,5 +537,9 @@ def run_calibration(step_count=120):
     plt.savefig('results/' + 'blood.png', format='png', dpi=500, bbox_inches='tight')
     #plt.plot(cell_concentrations["Collagen"], linewidth=lw, ls='-')
 
+def loop_fig(fignum):
+    return fignum + 1
 
+#batch_run(WoundModel)
+#AP_vs_not_model()
 #run_calibration()

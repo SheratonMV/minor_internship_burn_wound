@@ -28,7 +28,7 @@ class Endothelial(Agent):
             self.attract_macrophage()
             self.macrophage_time = 0
 
-        if self.TNFa > 0.5 and self.oxy >= 25 and self.IL6 > 0.5 and self.model.resting_neutrophils > 0 and self.oxy < 100 and self.model.blood_flow() < 80:
+        if self.TNFa > 0.5 and self.oxy >= 25 and self.IL6 > 0.5 and self.IL10 < 1.5 and self.model.resting_neutrophils > 0 and self.oxy < 100 and self.model.blood_flow() < 80:
             self.attract_neutrophil()
             self.neutrophil_time = 0
 
@@ -93,11 +93,17 @@ class Endothelial(Agent):
           #  if self.coll > 100:
            #     self.coll = 100
 
+    def bacterial_growth(self):
+        if self.oxy < 25:
+            self.oxy - 2
+        elif self.oxy < 60:
+            self.oxy - 1
 
     def step(self):
         self.heal_oxygen()
         self.attract_cells()
         self.decay_cytokines()
+        self.bacterial_growth()
 
 
 
@@ -112,55 +118,12 @@ class Neutrophil(Agent):
         self.pos = pos
         self.centre = centre
         self.apoptotic_hours = 0
-        self.apoptised = False
+        self.phagocytized = False
 
     def move(self):
         possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False)
         neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=False)
         new_position = []
-
-        # only migration over the non-wounded areas and to cell with highest TNFa.
-        '''TNFa = []
-        for agent in neighbors:
-            if type(agent) is Endothelial:
-                TNFa.append(agent.TNFa)
-
-        TNFa.sort(reverse=True)
-        new_position = []
-
-        print(max(TNFa))
-        if max(TNFa) == 0:
-            for agent in neighbors:
-                if type(agent) is Endothelial:
-                    if agent.oxy == 100:
-                        possible_steps.remove(agent.pos)
-                    elif agent.coll == 100:
-                        possible_steps.remove(agent.pos)
-            new_position = possible_steps
-            print('zero')
-
-        else:
-            print('nonzero')
-            for a in TNFa:
-                print(new_position)
-                if new_position != []:
-                    break
-
-                for agent in neighbors:
-                    if type(agent) is Endothelial:
-                        if agent.TNFa == a:
-
-
-                            if agent.oxy == 100:
-                                pass
-                            elif agent.coll == 100:
-                                pass
-                            else:
-                                new_position.append(agent.pos)
-                                break
-                        else:
-                            pass'''
-
 
         for agent in neighbors:
             if type(agent) is Endothelial:
@@ -178,8 +141,8 @@ class Neutrophil(Agent):
         else:
             neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=True)
             possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=True)
-            agent_attractant = [agent.TNFa + agent.IL6 for agent in neighbors if type(agent) is Endothelial]
-            new_position = [agent.pos for agent in neighbors if type(agent) is Endothelial and agent.TNFa + agent.IL6 == max(agent_attractant)][0]
+            agent_attractant = [agent.TNFa - agent.IL10 for agent in neighbors if type(agent) is Endothelial]
+            new_position = [agent.pos for agent in neighbors if type(agent) is Endothelial and agent.TNFa - agent.IL10 == max(agent_attractant)][0]
 
             nodes = np.asarray(possible_steps)
             deltas = nodes - new_position
@@ -220,9 +183,7 @@ class Neutrophil(Agent):
                     else:
                         agent.oxy += 1
 
-            if type(agent) is Macrophage:
-                if self.energy == 0:
-                    print('remove neutrophil')
+
 
     def necrosis(self):
         self.apoptotic_hours += 1
@@ -237,15 +198,15 @@ class Neutrophil(Agent):
                     agent.TNFa += 0.002
                     agent.oxy -= 2
         if self.apoptotic_hours == 10:
-            self.apoptised = True
+            self.phagocytized = True
 
     def step(self):
         """Step:
         if energy < 0: neutrophil is considered apoptised"""
 
-        if self.apoptised:
+        if self.phagocytized:
             pass
-        elif self.energy <= 0 and not self.apoptised:
+        elif self.energy <= 0 and not self.phagocytized:
             self.necrosis()
         else:
 
@@ -283,20 +244,23 @@ class Macrophage(Agent):
     def move(self):
         possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False)
         neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=False)
-
+        towards_neutrophil = []
         # only migration over the non-wounded areas.
         for agent in neighbors:
-            if type(agent) is Neutrophil and agent.energy <=0 and not agent.apoptised:
-                possible_steps = [agent.pos]
-
+            if type(agent) is Neutrophil and agent.energy <= 0 and not agent.phagocytized:
+                towards_neutrophil.append(agent.pos)
             elif type(agent) is Endothelial:
                 if agent.oxy < 20:
                     possible_steps.remove(agent.pos)
                 elif agent.coll >= 100:
                     possible_steps.remove(agent.pos)
 
+        if towards_neutrophil != []:
+            new_position = self.random.choice(towards_neutrophil)
+            self.model.grid.move_agent(self, new_position)
+            self.phenotype = 1
 
-        if possible_steps != []:
+        elif possible_steps != []:
             new_position = self.random.choice(possible_steps)
             self.model.grid.move_agent(self, new_position)
 
@@ -344,11 +308,8 @@ class Macrophage(Agent):
     def apoptise_neutrophil(self):
         cellmates = self.model.grid.get_cell_list_contents([self.pos])
         for agent in cellmates:
-            if type(agent) == Neutrophil and agent.energy <= 0 and not agent.apoptised:
-                agent.apoptised = True
-
-
-
+            if type(agent) == Neutrophil and agent.energy <= 0 and not agent.phagocytized:
+                agent.phagocytized = True
 
 
     def step(self):

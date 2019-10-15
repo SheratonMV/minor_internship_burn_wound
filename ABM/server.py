@@ -86,9 +86,10 @@ chart2 = ChartModule([{"Label": "Fibroblasts","Color": "Orange"}],data_collector
 chart3 = ChartModule([{"Label": "Neutrophils","Color": "Green"}],data_collector_name='datacollector')
 chart4 = ChartModule([{"Label": "Necrotic_neutrophils","Color": "Green"}],data_collector_name='datacollector')
 chart5 = ChartModule([{"Label": "Apoptised_neutrophils","Color": "Green"}],data_collector_name='datacollector')
+chart6 = ChartModule([{"Label": "Phagocytized_neutrophils","Color": "Green"}],data_collector_name='datacollector')
 
 server = ModularServer(WoundModel,
-                       [grid,chart3, chart4, chart5,chart,chart2],
+                       [grid,chart3, chart4, chart5,chart6,chart,chart2],
                        "Burn Wound Healing Model",
                        {"Neutrophils": Neutrophil_slider, "Macrophages": Macrophage_slider, "Fibroblasts": Fibroblast_slider,"IL10": IL10_slider, "IL6": IL6_slider,"TNFa": TNFa_slider, "TGFb": TGFb_slider, "width": grid_width, "height": grid_height, "wound_radius": wound_size_slider, "coagulation": coagulation_slider})
 
