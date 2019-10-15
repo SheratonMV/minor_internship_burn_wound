@@ -367,7 +367,8 @@ class Fibroblast(Agent):
             new_position = self.random.choice(possible_steps)
             self.model.grid.move_agent(self, new_position)
         else:
-            possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False)
+            neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=True)
+            possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=True)
             agent_TGFb = [agent.TGFb for agent in neighbors if type(agent) is Endothelial]
             new = [agent.pos for agent in neighbors if type(agent) is Endothelial and agent.TGFb == max(agent_TGFb)][0]
 
