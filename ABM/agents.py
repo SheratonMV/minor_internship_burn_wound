@@ -79,7 +79,7 @@ class Endothelial(Agent):
             self.macrophage_time = 0
 
 
-        if self.TNFa > 1 and self.oxy >= 25 and self.IL6 > 1 and self.model.resting_neutrophils > 0 and self.oxy<100  and self.model.blood_flow() <90:
+        if self.TNFa > 1 and self.oxy >= 25 and self.IL6 > 1 and self.model.resting_neutrophils > 0 and self.oxy<100  and self.model.blood_flow() <95 and self.coll<100:
             self.attract_neutrophil()
             self.neutrophil_time = 0
 
@@ -87,6 +87,16 @@ class Endothelial(Agent):
         if self.TGFb > 5 and self.coll < 100 and self.fibroblast_time % 8 == 0  and self.model.resting_fibroblasts > 0 :
             self.attract_fibroblast()
             self.fibroblast_time = 0
+
+        neighbors = self.model.grid.get_neighbors(self.pos, moore=True, include_center=False)
+        local_blood_supply = 0
+        for agent in neighbors:
+            if type(agent) is Endothelial:
+                local_blood_supply = local_blood_supply + agent.oxy
+        if(local_blood_supply>700):
+            self.oxy = self.oxy + 10
+
+        if(self.oxy>100): self.oxy = 100
 
         self.decay_cytokines()
 

@@ -342,7 +342,7 @@ def run_model(step_count=120):
     print('... Plotting collagen')
     plt.savefig('results/' + 'Collagen.png', format='png', dpi=500, bbox_inches='tight')
 
-run_model()
+#run_model()
 
 def run_calibration(step_count=120):
     model = WoundModel(50,50,50,0.5,0.5,0.5,0.5,25,25,10,0.5)
