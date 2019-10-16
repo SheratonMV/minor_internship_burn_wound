@@ -1,6 +1,7 @@
-from mesa.batchrunner import BatchRunner
+from batchrunner import FixedBatchRunner
 from ABM import WoundModel, Blood_flow, Collagen
 from agents import Neutrophil, Macrophage, Fibroblast, Endothelial
+
 
 def batch_run(WoundModel):
     print('Running without AP....')
@@ -18,15 +19,10 @@ def batch_run(WoundModel):
      "coagulation": 0.7
     }
 
-    batch_run = BatchRunner(
-    WoundModel,variable_parameters=None,
-    fixed_parameters = fixed_params,
-    max_steps=10,
-    model_reporters={"Blood_flow": Blood_flow,"Collagen": Collagen,"Macrophages": lambda WoundModel: WoundModel.schedule.get_breed_count(Macrophage), "Neutrophils": lambda WoundModel: WoundModel.schedule.get_breed_count(Neutrophil), "Fibroblasts": lambda WoundModel: WoundModel.schedule.get_breed_count(Fibroblast)}
+    batch_run = FixedBatchRunner(WoundModel, fixed_parameters = fixed_params, max_steps=10, model_reporters={"Blood_flow": Blood_flow,"Collagen": Collagen,"Macrophages": lambda WoundModel: WoundModel.schedule.get_breed_count(Macrophage), "Neutrophils": lambda WoundModel: WoundModel.schedule.get_breed_count(Neutrophil), "Fibroblasts": lambda WoundModel: WoundModel.schedule.get_breed_count(Fibroblast)}
     )
 
-    batch_run.run_all()
-    run_dataAP = batch_run.get_model_vars_dataframe()
+    run_dataAP = batch_run.collect_model_vars(WoundModel)
 
     print('Running with AP....')
     fixed_params = {
@@ -43,7 +39,7 @@ def batch_run(WoundModel):
         "coagulation": 0.7
     }
 
-    batch_run = BatchRunner(
+    batch_run = FixedBatchRunner(
         WoundModel, variable_parameters=None,
         fixed_parameters=fixed_params, iterations= 2,
         max_steps=10,
@@ -51,7 +47,7 @@ def batch_run(WoundModel):
     )
 
     batch_run.run_all()
-    run_data = batch_run.get_model_vars_dataframe()
+    run_data = batch_run.collect_model_vars()
     print(run_data[['Blood_flow', 'Neutrophils']])
 
 

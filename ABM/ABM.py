@@ -15,6 +15,7 @@ from schedule import RandomActivationByAgent
 import matplotlib.pyplot as plt
 import numpy as np
 #from batchrun import batch_run
+from mesa.batchrunner import BatchRunner
 
 
 class WoundModel(Model):
@@ -176,4 +177,5 @@ def heatmap(model, entity):
             elif entity == "TNFa":
                 map.append([agent.pos, agent.TNFa])
     return np.array(map)
+
 
