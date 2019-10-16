@@ -327,7 +327,7 @@ class Fibroblast(Agent):
         super().__init__(unique_id, model)
         self.energy = 1
         self.pos = pos
-        self.collagen = 1000
+        self.collagen = 600
         self.TGFb_production = 0.01
         self.collagen_secretion = 1
 
@@ -409,8 +409,11 @@ class Fibroblast(Agent):
                         self.secrete_collagen()
                         self.secrete_TGFb()
                         self.energy -= 0.005
+        if self.collagen <= 5:
+            self.energy = 0
 
 
         #When the wound is repaired fibroblasts are apoptised
         if self.model.Collagen() > 100:
-            self.energy -= 0.03
+            self.collagen -= 5
+            #self.energy -= 0.03

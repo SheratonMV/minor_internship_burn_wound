@@ -3,17 +3,17 @@ import numpy as np
 from ABM import WoundModel
 
 def AP_vs_not_model(step_count=120):
+    print('Running without AP....')
     model = WoundModel(50,50,50,0.5,0.5,0.5,0.5,25,25,10,0.7)
     for i in range(step_count):
         model.step()
     cell_concentrations = model.datacollector.get_model_vars_dataframe()
-    print('NON-AP run finished....')
 
+    print('Running with AP....')
     modelAP = WoundModel(80, 50, 50, 7, 0.0, 0.5, 0.5, 25, 25, 10, 0.7)
     for i in range(step_count):
         modelAP.step()
     cell_concentrationsAP = modelAP.datacollector.get_model_vars_dataframe()
-    print('AP run finished....')
 
     lw = 5 #Linewidth
     ls = 20 #Labelsize
@@ -98,6 +98,7 @@ def AP_vs_not_model(step_count=120):
     print('... Plotting collagen')
     plt.savefig('results/' + 'Collagen.png', format='png', dpi=500, bbox_inches='tight')
 
+    print('... Plotting TGFb heatmaps')
     n = loop_fig(n)
     plt.figure(n)
     TG_map = cell_concentrations["TGFb"][119]
@@ -122,6 +123,7 @@ def AP_vs_not_model(step_count=120):
     plt.title("TGFb", fontsize=ts)
     plt.savefig('results/' + 'tgfbAP.png', format='png', dpi=500, bbox_inches='tight')
 
+    print('... Plotting IL6 heatmaps')
     n = loop_fig(n)
     plt.figure(n)
     TG_map = cell_concentrations["IL6"][119]
@@ -144,8 +146,9 @@ def AP_vs_not_model(step_count=120):
     # plt.show()
     plt.imshow(Tmap, cmap="hot")
     plt.title("IL-6", fontsize=ts)
-    plt.savefig('results/' + 'IL10AP.png', format='png', dpi=500, bbox_inches='tight')
+    plt.savefig('results/' + 'IL6AP.png', format='png', dpi=500, bbox_inches='tight')
 
+    print('... Plotting Il10 heatmaps')
     n = loop_fig(n)
     plt.figure(n)
     TG_map = cell_concentrations["IL10"][119]
@@ -168,8 +171,9 @@ def AP_vs_not_model(step_count=120):
     # plt.show()
     plt.imshow(Tmap, cmap="hot")
     plt.title("IL-10", fontsize=ts)
-    plt.savefig('results/' + 'IL-10AP.png', format='png', dpi=500, bbox_inches='tight')
+    plt.savefig('results/' + 'IL10AP.png', format='png', dpi=500, bbox_inches='tight')
 
+    print('... Plotting TNFa heatmaps')
     n = loop_fig(n)
     plt.figure(n)
     TG_map = cell_concentrations["TNFa"][119]

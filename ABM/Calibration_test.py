@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from ABM import WoundModel
 
 def run_calibration_test(step_count=120):
+    print('Running the model')
     model = WoundModel(50,50,50,0.5,0.5,0.5,0.5,25,25,10,0.5)
     for i in range(step_count):
         model.step()
@@ -27,7 +28,7 @@ def run_calibration_test(step_count=120):
     plt.legend({ 'Fibroblasts', 'Macrophages', 'Neutrophils', }, loc='best', fontsize=lfs)
     plt.tick_params(labelsize=ls)
     plt.tight_layout()
-    print('... Plotting macrophages')
+    print('... Plotting macrophages, neutrophils and fibroblasts')
     plt.savefig('results/' + 'all.png', format='png', dpi=500, bbox_inches='tight')
 
     n = loop_fig(n)
@@ -41,7 +42,7 @@ def run_calibration_test(step_count=120):
 
     plt.tick_params(labelsize=ls)
     plt.tight_layout()
-    print('... Plotting macrophages')
+    print('... Plotting blood flow and oxygen content')
     plt.savefig('results/' + 'blood.png', format='png', dpi=500, bbox_inches='tight')
     #plt.plot(cell_concentrations["Collagen"], linewidth=lw, ls='-')
 
