@@ -369,7 +369,7 @@ class Fibroblast(Agent):
                 TGFb_neigbors += [agent.TGFb]
                 IL6_neigbors += [agent.IL6]
 
-        #actually 1+ deactivating cytokines but not included in this model
+        # actually 1+ deactivating cytokines but not included in this model
         Collagen_stimulation_factor =  m.log((1 + sum(TGFb_neigbors)/9 + sum(IL6_neigbors)/9)/1)
 
 
