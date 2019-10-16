@@ -16,11 +16,13 @@ import math
 
 """
 Code to model the innate immune response coupled with the Alkaline Phosphatase simulator.
-Created on Thu Mar 10 11:24:36 2016. Runtime is in minutes.
+Created on Mar 2016. Runtime is in minutes.
+
+Wound section added on June 2019 by Mark de Boer and Ben Dickens
 """
 
 
-__author__ = ""
+__author__ = "Presbitero"
 
 
 sns.set_palette("deep")

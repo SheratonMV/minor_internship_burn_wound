@@ -4,18 +4,7 @@
     <bookmark url="file://$PROJECT_DIR$/ABM/ABM.py" line="495" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="266acaa8-f5e9-45a1-b525-882b6900925d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/ABM/ABM.py" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/ABM.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/agents.py" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/agents.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/Collagen.png" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/results/Collagen.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/Fibroblasts.png" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/results/Fibroblasts.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/Macrophages.png" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/results/Macrophages.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/Neutrophils.png" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/results/Neutrophils.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/oxygen.png" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/results/oxygen.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/tgfb.png" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/results/tgfb.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/tgfbAP.png" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/results/tgfbAP.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/server.py" afterDir="false" />
-    </list>
+    <list default="true" id="266acaa8-f5e9-45a1-b525-882b6900925d" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,10 +13,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ABM/server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="291">
+            <state relative-caret-position="648">
               <caret line="91" column="59" selection-start-line="91" selection-start-column="59" selection-end-line="91" selection-end-column="59" />
             </state>
           </provider>
@@ -36,8 +25,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ABM/agents.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="142">
-              <caret line="418" column="58" selection-start-line="418" selection-start-column="52" selection-end-line="418" selection-end-column="58" />
+            <state relative-caret-position="-2550">
+              <caret line="133" column="24" lean-forward="true" selection-start-line="133" selection-start-column="24" selection-end-line="133" selection-end-column="24" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
                 <element signature="e#866#1071#0" />
@@ -45,18 +34,17 @@
                 <element signature="e#1346#1532#0" />
                 <element signature="e#1573#1981#0" />
                 <element signature="e#2585#3302#0" />
-                <element signature="e#3350#3444#0" />
                 <element signature="e#3339#3441#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ABM/ABM.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="261">
-              <caret line="124" column="334" selection-start-line="124" selection-start-column="308" selection-end-line="124" selection-end-column="334" />
+            <state relative-caret-position="300">
+              <caret line="524" column="19" lean-forward="true" selection-start-line="524" selection-start-column="19" selection-end-line="524" selection-end-column="19" />
               <folding>
                 <element signature="e#77#109#0" expanded="true" />
                 <element signature="e#6253#6454#0" />
@@ -92,8 +80,8 @@
       <find>PRINT</find>
       <find>TGFb</find>
       <find>coll</find>
-      <find>apopti</find>
       <find>apoptise</find>
+      <find>apopti</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -114,9 +102,9 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1382" />
+    <option name="x" value="-1701" />
+    <option name="y" value="-140" />
+    <option name="width" value="1380" />
     <option name="height" value="744" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -320,23 +308,23 @@
       <workItem from="1568886371203" duration="27041000" />
       <workItem from="1570093651342" duration="9570000" />
       <workItem from="1570534033580" duration="13904000" />
-      <workItem from="1570697841138" duration="41357000" />
+      <workItem from="1570697841138" duration="43958000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="91872000" />
+    <option name="totallyTimeSpent" value="94473000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <frame x="-1928" y="-129" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22995462" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16204691" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.17184943" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.11375948" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -369,7 +357,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/minor_internship_burn_wound$run.coverage" NAME="run Coverage Results" MODIFIED="1571150984036" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ABM" />
+    <SUITE FILE_PATH="coverage/minor_internship_burn_wound$run.coverage" NAME="run Coverage Results" MODIFIED="1571214295723" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ABM" />
     <SUITE FILE_PATH="coverage/minor_internship_burn_wound$plots_HIIS.coverage" NAME="plots HIIS Coverage Results" MODIFIED="1570102505778" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ABM" />
     <SUITE FILE_PATH="coverage/minor_internship_burn_wound$APSim_Model.coverage" NAME="APSim_Model Coverage Results" MODIFIED="1570541139386" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ODE" />
     <SUITE FILE_PATH="coverage/minor_internship_burn_wound$ABM.coverage" NAME="ABM Coverage Results" MODIFIED="1571150388515" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ABM" />
@@ -403,10 +391,17 @@
     <entry file="file://$PROJECT_DIR$/ABM/run.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/ABM/server.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="648">
+          <caret line="91" column="59" selection-start-line="91" selection-start-column="59" selection-end-line="91" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/ABM/agents.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="142">
-          <caret line="418" column="58" selection-start-line="418" selection-start-column="52" selection-end-line="418" selection-end-column="58" />
+        <state relative-caret-position="-2550">
+          <caret line="133" column="24" lean-forward="true" selection-start-line="133" selection-start-column="24" selection-end-line="133" selection-end-column="24" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
             <element signature="e#866#1071#0" />
@@ -414,7 +409,6 @@
             <element signature="e#1346#1532#0" />
             <element signature="e#1573#1981#0" />
             <element signature="e#2585#3302#0" />
-            <element signature="e#3350#3444#0" />
             <element signature="e#3339#3441#0" />
           </folding>
         </state>
@@ -422,8 +416,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ABM/ABM.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="261">
-          <caret line="124" column="334" selection-start-line="124" selection-start-column="308" selection-end-line="124" selection-end-column="334" />
+        <state relative-caret-position="300">
+          <caret line="524" column="19" lean-forward="true" selection-start-line="524" selection-start-column="19" selection-end-line="524" selection-end-column="19" />
           <folding>
             <element signature="e#77#109#0" expanded="true" />
             <element signature="e#6253#6454#0" />
@@ -438,13 +432,6 @@
             <element signature="e#10125#16763#0" />
             <element signature="e#18478#18495#0" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ABM/server.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="291">
-          <caret line="91" column="59" selection-start-line="91" selection-start-column="59" selection-end-line="91" selection-end-column="59" />
         </state>
       </provider>
     </entry>
