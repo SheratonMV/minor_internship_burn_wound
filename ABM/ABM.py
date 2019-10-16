@@ -11,9 +11,10 @@ from mesa.datacollection import DataCollector
 from agents import Neutrophil, Macrophage, Fibroblast, Endothelial
 from coordinates import *
 from schedule import RandomActivationByAgent
-from mesa.batchrunner import BatchRunner
+
 import matplotlib.pyplot as plt
 import numpy as np
+#from batchrun import batch_run
 
 
 class WoundModel(Model):
@@ -122,10 +123,7 @@ class WoundModel(Model):
 
         self.running = True
 
-        self.datacollector = DataCollector(model_reporters={"Blood_flow": Blood_flow,"Collagen": Collagen, "Macrophages": Macrophage_count, "Neutrophils": Neutrophil_count, "Fibroblasts": Fibroblast_count, "Necrotic_neutrophils": Neutrophil_necrotic_count,"Apoptised_neutrophils": Neutrophil_apoptised_count,"Phagocytized_neutrophils":Neutrophil_phagocytized_count, "TGFb": TGFb_heatmap, "IL6": IL6_heatmap, "IL10": IL10_heatmap, "TNFa": TNFa_heatmap })
-
-
-
+        self.datacollector = DataCollector(model_reporters={"Blood_flow": Blood_flow,"Collagen": Collagen, "Macrophages": lambda self: self.schedule.get_breed_count(Macrophage), "Neutrophils": lambda self: self.schedule.get_breed_count(Neutrophil), "Fibroblasts": lambda self: self.schedule.get_breed_count(Fibroblast), "Necrotic_neutrophils": lambda self: self.schedule.get_neutrophiltype_count(Neutrophil,"Necrotic"),"Apoptised_neutrophils": lambda self: self.schedule.get_neutrophiltype_count(Neutrophil,"Apoptotic"),"Phagocytized_neutrophils":lambda self: self.schedule.get_neutrophiltype_count(Neutrophil,"Phagocytized"), "TGFb":lambda self: heatmap(self, "TGFB"), "IL6": lambda self: heatmap(self, "IL6"), "IL10": lambda self: heatmap(self, "Il10"), "TNFa": lambda self: heatmap(self, "TNFa") })
 
     def blood_flow(self):
         agent_oxy = [agent.oxy for agent in self.schedule.agents if type(agent) is Endothelial]
@@ -136,7 +134,6 @@ class WoundModel(Model):
         agent_coll = [agent.coll for agent in self.schedule.agents if type(agent) is Endothelial]
         coll_total = sum(agent_coll)
         return coll_total / len(self.all_coordinates)
-
 
     def step(self):
         self.schedule.step()
@@ -155,10 +152,6 @@ class WoundModel(Model):
 
 
 
-
-
-
-
 def Blood_flow(model):
     agent_oxy = [agent.oxy for agent in model.schedule.agents if type(agent) is Endothelial and agent.pos in model.wound_coord]
     oxy_total = sum(agent_oxy)
@@ -170,376 +163,17 @@ def Collagen(model):
     coll_total = sum(agent_coll)
     return coll_total/len(model.wound_coord)
 
-def Fibroblast_count(model):
-     fibroblast_count = 0
-     for agent in model.schedule.agents:
-         if type(agent) is Fibroblast and agent.energy > 0:
-            fibroblast_count += 1
-     return fibroblast_count
-
-def Neutrophil_count(model):
-     neutrophil_count = 0
-     for agent in model.schedule.agents:
-         if type(agent) is Neutrophil and agent.energy > 0:
-            neutrophil_count += 1
-     return neutrophil_count
-
-def Neutrophil_necrotic_count(model):
-    neutrophil_count = 0
-    for agent in model.schedule.agents:
-        if type(agent) is Neutrophil and agent.energy <= 0:
-            if not agent.phagocytized and agent.apoptotic_hours >= 5:
-                neutrophil_count += 1
-    return neutrophil_count
-
-def Neutrophil_apoptised_count(model):
-    neutrophil_count = 0
-    for agent in model.schedule.agents:
-        if type(agent) is Neutrophil and agent.energy <= 0 and not agent.phagocytized and agent.apoptotic_hours < 5:
-                neutrophil_count += 1
-    return neutrophil_count
-
-def Neutrophil_phagocytized_count(model):
-    neutrophil_count = 0
-    for agent in model.schedule.agents:
-        if type(agent) is Neutrophil and agent.phagocytized:
-                neutrophil_count += 1
-    return neutrophil_count
-
-def Macrophage_count(model):
-     macrophage_count = 0
-     for agent in model.schedule.agents:
-         if type(agent) is Macrophage and agent.energy > 0:
-            macrophage_count += 1
-     return macrophage_count
-
-def TGFb_heatmap(model):
-    TGFB_map = []
+def heatmap(model, entity):
+    map = []
     for agent in model.schedule.agents:
         if type(agent) is Endothelial:
-            TGFB_map.append([agent.pos, agent.TGFb])
+            if entity == "TGFB":
+                map.append([agent.pos, agent.TGFb])
+            elif entity == "IL6":
+                map.append([agent.pos, agent.IL6])
+            elif entity == "IL10":
+                map.append([agent.pos, agent.IL10])
+            elif entity == "TNFa":
+                map.append([agent.pos, agent.TNFa])
+    return np.array(map)
 
-    return np.array(TGFB_map)
-
-def IL6_heatmap(model):
-    IL6_map = []
-    for agent in model.schedule.agents:
-        if type(agent) is Endothelial:
-            IL6_map.append([agent.pos, agent.IL6])
-
-    return np.array(IL6_map)
-
-def IL10_heatmap(model):
-    IL10_map = []
-    for agent in model.schedule.agents:
-        if type(agent) is Endothelial:
-            IL10_map.append([agent.pos, agent.IL10])
-
-    return np.array(IL10_map)
-
-def TNFa_heatmap(model):
-    TNFa_map = []
-    for agent in model.schedule.agents:
-        if type(agent) is Endothelial:
-            TNFa_map.append([agent.pos, agent.TNFa])
-
-    return np.array(TNFa_map)
-
-
-
-
-#different runs
-def batch_run(WoundModel):
-
-    fixed_params = {
-    "Neutrophils": 80,
-     "Macrophages": 50,
-     "Fibroblasts": 50,
-     "IL10": 0.5,
-     "IL6": 0.5,
-     "TNFa": 0.5,
-     "TGFb": 0.5,
-     "width": 25,
-     "height": 25,
-     "wound_radius": 10,
-     "coagulation": 0.7
-    }
-
-    batch_run = BatchRunner(
-    WoundModel,variable_parameters=None,
-    fixed_parameters = fixed_params,
-    max_steps=120,
-    model_reporters={"Blood_flow": Blood_flow,"Collagen": Collagen, "Macrophages": Macrophage_count, "Neutrophils": Neutrophil_count, "Fibroblasts": Fibroblast_count}
-    )
-
-    batch_run.run_all()
-    run_dataAP = batch_run.get_model_vars_dataframe()
-
-    fixed_params = {
-        "Neutrophils": 80,
-        "Macrophages": 80,
-        "Fibroblasts": 80,
-        "IL10": 0.5,
-        "IL6": 0.5,
-        "TNFa": 0.5,
-        "TGFb": 0.5,
-        "width": 25,
-        "height": 25,
-        "wound_radius": 10,
-        "coagulation": 0.5
-    }
-
-    batch_run = BatchRunner(
-        WoundModel, variable_parameters=None,
-        fixed_parameters=fixed_params, iterations= 5,
-        max_steps=120,
-        model_reporters={"Blood_flow": Blood_flow, "Collagen": Collagen, "Macrophages": Macrophage_count,
-                         "Neutrophils": Neutrophil_count, "Fibroblasts": Fibroblast_count}
-    )
-
-    batch_run.run_all()
-    run_data = batch_run.get_model_vars_dataframe()
-
-
-
-def AP_vs_not_model(step_count=120):
-    model = WoundModel(50,50,50,0.5,0.5,0.5,0.5,25,25,10,0.5)
-    for i in range(step_count):
-        model.step()
-    cell_concentrations = model.datacollector.get_model_vars_dataframe()
-
-    modelAP = WoundModel(80, 50, 50, 4, 0.0, 0.5, 0.5, 25, 25, 10, 0.5)
-    for i in range(step_count):
-        modelAP.step()
-    cell_concentrationsAP = modelAP.datacollector.get_model_vars_dataframe()
-
-
-    lw = 5 #Linewidth
-    ls = 20 #Labelsize
-    fs = 25 #Fontsize
-    lfs = 25 #Fontsize legend
-    ts = 30 #Title size
-
-    n = loop_fig(1)
-    plt.figure(n)
-    plt.plot(cell_concentrations["Macrophages"], linewidth=lw, ls='-', color = "#377eb8" )
-    plt.plot(cell_concentrationsAP["Macrophages"], linewidth=lw, ls='-', color = "#4daf4a")
-    plt.ylabel("Concentration (Arbitrary units)", fontsize=fs)
-    plt.xlabel("Time (h)", fontsize=fs)
-    plt.title("Macrophages", fontsize=ts)
-    plt.ylim(0,100)
-    plt.xlim(0,120)
-    plt.legend({ 'bIAP', 'Placebo'}, loc='best', fontsize=lfs)
-    plt.tick_params(labelsize=ls)
-    plt.tight_layout()
-    print('... Plotting macrophages')
-    plt.savefig('results/' + 'Macrophages.png', format='png', dpi=500, bbox_inches='tight')
-
-    n = loop_fig(n)
-    plt.figure(n)
-    plt.plot(cell_concentrations["Neutrophils"], linewidth=lw, ls='-', color = "#377eb8" )
-    plt.plot(cell_concentrationsAP["Neutrophils"], linewidth=lw, ls='-', color = "#4daf4a")
-    plt.ylabel("Concentration (Arbitrary units)", fontsize=fs)
-    plt.xlabel("Time (h)", fontsize=fs)
-    plt.ylim(0, 100)
-    plt.xlim(0, 120)
-    plt.legend({ 'bIAP', 'Placebo'}, loc='best', fontsize=lfs)
-    plt.title("Neutrophils", fontsize=ts)
-    plt.tick_params(labelsize=ls)
-    plt.tight_layout()
-    print('... Plotting neutrophils')
-    plt.savefig('results/' + 'Neutrophils.png', format='png', dpi=500, bbox_inches='tight')
-
-    n = loop_fig(n)
-    plt.figure(n)
-    plt.plot(cell_concentrations["Fibroblasts"], linewidth=lw, ls='-', color = "#377eb8")
-    plt.plot(cell_concentrationsAP["Fibroblasts"], linewidth=lw, ls='-', color = "#4daf4a" )
-    plt.ylabel("Concentration (Arbitrary units)", fontsize=fs)
-    plt.xlabel("Time (h)", fontsize=fs)
-    plt.ylim(0, 100)
-    plt.xlim(0, 120)
-    plt.legend({ 'bIAP', 'Placebo'}, loc='best', fontsize=lfs)
-    plt.title("Fibroblasts", fontsize=ts)
-    plt.tick_params(labelsize=ls)
-    plt.tight_layout()
-    print('... Plotting fibroblasts')
-    plt.savefig('results/' + 'Fibroblasts.png', format='png', dpi=500, bbox_inches='tight')
-
-    n = loop_fig(n)
-    plt.figure(n)
-
-    plt.plot(cell_concentrations["Blood_flow"], linewidth=lw, ls='-', color = "#377eb8" )
-    plt.plot(cell_concentrationsAP["Blood_flow"], linewidth=lw, ls='-', color="#4daf4a")
-    plt.ylabel("Concentration (Arbitrary units)", fontsize=fs)
-    plt.xlabel("Time (h)", fontsize=fs)
-    plt.ylim(0, 100)
-    plt.xlim(0, 120)
-    plt.legend({ 'bIAP', 'Placebo'}, loc='best', fontsize=lfs)
-    plt.title("Oxygen", fontsize=ts)
-    plt.tick_params(labelsize=ls)
-    plt.tight_layout()
-    print('... Plotting Oxygen')
-    plt.savefig('results/' + 'oxygen.png', format='png', dpi=500, bbox_inches='tight')
-
-    n = loop_fig(n)
-    plt.figure(n)
-
-    plt.plot(cell_concentrations["Collagen"], linewidth=lw, ls='-', color = "#377eb8" )
-    plt.plot(cell_concentrationsAP["Collagen"], linewidth=lw, ls='-', color="#4daf4a")
-    plt.ylabel("Concentration (Arbitrary units)", fontsize=fs)
-    plt.xlabel("Time (h)", fontsize=fs)
-    plt.ylim(0, 100)
-    plt.xlim(0, 120)
-    plt.legend({ 'bIAP', 'Placebo'}, loc='best', fontsize=lfs)
-    plt.title("Collagen ", fontsize=ts)
-    plt.tick_params(labelsize=ls)
-    plt.tight_layout()
-    print('... Plotting collagen')
-    plt.savefig('results/' + 'Collagen.png', format='png', dpi=500, bbox_inches='tight')
-
-    n = loop_fig(n)
-    plt.figure(n)
-    TG_map = cell_concentrations["TGFb"][119]
-    Tmap = np.zeros((25, 25))
-    for x in TG_map:
-        a, b = x[0][0], x[0][1]
-        Tmap[a, b] = x[1]
-    # plt.show()
-    plt.imshow(Tmap, cmap="hot")
-    plt.title("TGFb", fontsize=ts)
-    plt.savefig('results/' + 'tgfb.png', format='png', dpi=500, bbox_inches='tight')
-
-    n = loop_fig(n)
-    plt.figure(n)
-    TG_map = cell_concentrationsAP["TGFb"][119]
-    Tmap = np.zeros((25, 25))
-    for x in TG_map:
-        a, b = x[0][0], x[0][1]
-        Tmap[a, b] = x[1]
-    # plt.show()
-    plt.imshow(Tmap, cmap="hot")
-    plt.title("TGFb", fontsize=ts)
-    plt.savefig('results/' + 'tgfbAP.png', format='png', dpi=500, bbox_inches='tight')
-
-    n = loop_fig(n)
-    plt.figure(n)
-    TG_map = cell_concentrations["IL6"][119]
-    Tmap = np.zeros((25, 25))
-    for x in TG_map:
-        a, b = x[0][0], x[0][1]
-        Tmap[a, b] = x[1]
-    # plt.show()
-    plt.imshow(Tmap, cmap="hot")
-    plt.title("IL-6", fontsize=ts)
-    plt.savefig('results/' + 'IL6.png', format='png', dpi=500, bbox_inches='tight')
-
-    n = loop_fig(n)
-    plt.figure(n)
-    TG_map = cell_concentrationsAP["IL6"][119]
-    Tmap = np.zeros((25, 25))
-    for x in TG_map:
-        a, b = x[0][0], x[0][1]
-        Tmap[a, b] = x[1]
-    # plt.show()
-    plt.imshow(Tmap, cmap="hot")
-    plt.title("IL-6", fontsize=ts)
-    plt.savefig('results/' + 'IL10AP.png', format='png', dpi=500, bbox_inches='tight')
-
-    n = loop_fig(n)
-    plt.figure(n)
-    TG_map = cell_concentrations["IL10"][119]
-    Tmap = np.zeros((25, 25))
-    for x in TG_map:
-        a, b = x[0][0], x[0][1]
-        Tmap[a, b] = x[1]
-    # plt.show()
-    plt.imshow(Tmap, cmap="hot")
-    plt.title("IL-10", fontsize=ts)
-    plt.savefig('results/' + 'IL10.png', format='png', dpi=500, bbox_inches='tight')
-
-    n = loop_fig(n)
-    plt.figure(n)
-    TG_map = cell_concentrationsAP["IL10"][119]
-    Tmap = np.zeros((25, 25))
-    for x in TG_map:
-        a, b = x[0][0], x[0][1]
-        Tmap[a, b] = x[1]
-    # plt.show()
-    plt.imshow(Tmap, cmap="hot")
-    plt.title("IL-10", fontsize=ts)
-    plt.savefig('results/' + 'IL-10AP.png', format='png', dpi=500, bbox_inches='tight')
-
-    n = loop_fig(n)
-    plt.figure(n)
-    TG_map = cell_concentrations["TNFa"][119]
-    Tmap = np.zeros((25, 25))
-    for x in TG_map:
-        a, b = x[0][0], x[0][1]
-        Tmap[a, b] = x[1]
-    # plt.show()
-    plt.imshow(Tmap, cmap="hot")
-    plt.title("TNFa", fontsize=ts)
-    plt.savefig('results/' + 'TNFa.png', format='png', dpi=500, bbox_inches='tight')
-
-    n = loop_fig(n)
-    plt.figure(n)
-    TG_map = cell_concentrationsAP["TNFa"][119]
-    Tmap = np.zeros((25, 25))
-    for x in TG_map:
-        a, b = x[0][0], x[0][1]
-        Tmap[a, b] = x[1]
-    # plt.show()
-    plt.imshow(Tmap, cmap="hot")
-    plt.title("TNFa", fontsize=ts)
-    plt.savefig('results/' + 'TNFaAP.png', format='png', dpi=500, bbox_inches='tight')
-
-def run_calibration(step_count=120):
-    model = WoundModel(50,50,50,0.5,0.5,0.5,0.5,25,25,10,0.5)
-    for i in range(step_count):
-        model.step()
-    cell_concentrations = model.datacollector.get_model_vars_dataframe()
-
-
-    lw = 5  # Linewidth
-    ls = 10 # Labelsize
-    fs = 15 # Fontsize
-    lfs = 15 # Fontsize legend
-    ts = 15 # Title size
-
-
-    n = loop_fig(1)
-    plt.figure(n)
-    plt.plot(cell_concentrations["Macrophages"], linewidth=lw, ls='-')
-    plt.plot(cell_concentrations["Neutrophils"], linewidth=lw, ls='-')
-    plt.plot(cell_concentrations["Fibroblasts"], linewidth=lw, ls='-')
-    plt.xlim(0,120)
-    plt.ylabel("Concentration (Arbitrary units)", fontsize=fs)
-    plt.xlabel("Time (h)", fontsize=fs)
-
-    plt.legend({ 'Fibroblasts', 'Macrophages', 'Neutrophils', }, loc='best', fontsize=lfs)
-    plt.tick_params(labelsize=ls)
-    plt.tight_layout()
-    print('... Plotting macrophages')
-    plt.savefig('results/' + 'all.png', format='png', dpi=500, bbox_inches='tight')
-
-    n = loop_fig(n)
-    plt.figure(n)
-    plt.plot(cell_concentrations["Blood_flow"], linewidth=lw, ls='-', color = 'red')
-    plt.plot(cell_concentrations["Collagen"], linewidth=lw, ls='-', color = 'black')
-    plt.legend({'Oxygen', 'Collagen' }, loc='best', fontsize=lfs)
-    plt.xlim(0, 120)
-    plt.ylabel("Concentration (Arbitrary units)", fontsize=fs)
-    plt.xlabel("Time (h)", fontsize=fs)
-
-    plt.tick_params(labelsize=ls)
-    plt.tight_layout()
-    print('... Plotting macrophages')
-    plt.savefig('results/' + 'blood.png', format='png', dpi=500, bbox_inches='tight')
-    #plt.plot(cell_concentrations["Collagen"], linewidth=lw, ls='-')
-
-def loop_fig(fignum):
-    return fignum + 1
-
-#batch_run(WoundModel)
-#AP_vs_not_model()
-#run_calibration()

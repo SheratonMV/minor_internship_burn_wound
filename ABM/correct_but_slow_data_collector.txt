@@ -1,0 +1,14 @@
+   self.datacollector = DataCollector(model_reporters={"Blood_flow": lambda self: self.blood_flow,"Collagen": lambda self: self.Collagen, "Macrophages": lambda self: self.schedule.get_breed_count(Macrophage), "Neutrophils": lambda self: self.schedule.get_breed_count(Neutrophil), "Fibroblasts": lambda self: self.schedule.get_breed_count(Fibroblast), "Necrotic_neutrophils": Neutrophil_necrotic_count,"Apoptised_neutrophils": Neutrophil_apoptised_count,"Phagocytized_neutrophils":Neutrophil_phagocytized_count, "TGFb": TGFb_heatmap, "IL6": IL6_heatmap, "IL10": IL10_heatmap, "TNFa": TNFa_heatmap })
+
+
+
+
+    def blood_flow(self):
+        agent_oxy = [agent.oxy for agent in self.schedule.agents if type(agent) is Endothelial and agent.pos in self.wound_coord]
+        oxy_total = sum(agent_oxy)
+        return oxy_total / (len(self.wound_coord))
+
+    def Collagen(self):
+        agent_coll = [agent.coll for agent in self.schedule.agents if type(agent) is Endothelial and agent.pos in self.wound_coord]
+        coll_total = sum(agent_coll)
+        return coll_total / (len(self.wound_coord))

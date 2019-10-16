@@ -67,8 +67,27 @@ class RandomActivationByAgent(RandomActivation):
         for agent_key in agent_keys:
             self.agents_by_breed[breed][agent_key].step()
 
-    def get_breed_count(self, breed_class):
+    def get_breed_count(self, celltype):
         '''
-        Returns the current number of agents of certain breed in the queue.
+        Returns the current number of agents of certain celltype in the queue.
         '''
-        return len(self.agents_by_breed[breed_class].values())
+        count = 0
+        for agents in self.agents_by_breed[celltype].values():
+            if agents.energy > 0:
+                count +=1
+        return count
+
+    def get_neutrophiltype_count(self, celltype, type):
+        '''
+        Returns the current number of neutrophils apoptotic, necrotic and phagocytized in the queue.
+        '''
+
+        count = 0
+        for agent in self.agents_by_breed[celltype].values():
+            if type == "Apoptotic" and agent.energy <= 0 and not agent.phagocytized and agent.apoptotic_hours < 5:
+                count += 1
+            elif type == "Necrotic" and not agent.phagocytized and agent.apoptotic_hours >= 5:
+                    count += 1
+            elif type == "Phagocytized" and agent.phagocytized:
+                count += 1
+        return count

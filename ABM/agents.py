@@ -56,25 +56,19 @@ class Endothelial(Agent):
 
     def decay_cytokines(self):
 
-        if self.IL6 <= 0.02:
-            self.IL6 = 0
-        else:
-            self.IL6 -= 0.02
+        decay_rate_cytokines = 2.7648 / 24  # per hour
+        decay_rate_TGFB = 9.072 / 24  # per hour
 
-        if self.IL10 <= 0.02:
-            self.IL10 = 0
-        else:
-            self.IL10 -= 0.02
+        for i in (self.IL6, self.IL10, self.TNFa, self.TGFb):
 
-        if self.TNFa <= 0.02:
-            self.TNFa = 0
-        else:
-            self.TNFa -= 0.02
+            if i == self.TGFb: decay_rate = decay_rate_TGFB
+            else: decay_rate = decay_rate_cytokines
 
-        if self.TGFb <= 0.02:
-            self.TGFb = 0
-        else:
-            self.TGFb -= 0.02
+            if i * decay_rate < 0.02:
+                i -= 0.02
+                if i < 0: i = 0
+            else:
+                i -= i * decay_rate
 
     def heal_oxygen(self):
         """If oxygen of all neighbors is healed, the oxygen will regenerate itself."""
@@ -123,7 +117,7 @@ class Neutrophil(Agent):
     def move(self):
         possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False)
         neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=False)
-        new_position = []
+
 
         for agent in neighbors:
             if type(agent) is Endothelial:
@@ -175,7 +169,7 @@ class Neutrophil(Agent):
                     if agent.oxy >= 100:
                         pass
                     else:
-                        agent.oxy += 2
+                        agent.oxy += 1
             elif type(agent) is Endothelial:
                 if self.energy > 0:
                     if agent.oxy >= 100:
@@ -259,6 +253,7 @@ class Macrophage(Agent):
             new_position = self.random.choice(towards_neutrophil)
             self.model.grid.move_agent(self, new_position)
             self.phenotype = 1
+
 
         elif possible_steps != []:
             new_position = self.random.choice(possible_steps)
@@ -375,7 +370,7 @@ class Fibroblast(Agent):
                 IL6_neigbors += [agent.IL6]
 
         #actually 1+ deactivating cytokines but not included in this model
-        Collagen_stimulation_factor = 2 * m.log((1 + sum(TGFb_neigbors)/9 + sum(IL6_neigbors)/9)/1)
+        Collagen_stimulation_factor =  m.log((1 + sum(TGFb_neigbors)/9 + sum(IL6_neigbors)/9)/1)
 
 
         for agent in neighbors:
@@ -419,12 +414,3 @@ class Fibroblast(Agent):
         #When the wound is repaired fibroblasts are apoptised
         if self.model.Collagen() > 100:
             self.energy -= 0.03
-
-
-
-
-
-
-
-
-
