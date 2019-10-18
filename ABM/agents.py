@@ -88,16 +88,26 @@ class Endothelial(Agent):
            #     self.coll = 100
 
     def bacterial_growth(self):
-        if self.oxy < 25:
-            self.oxy - 2
+        neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=False)
+
+        if self.oxy < 20:
+            self.oxy -= 2
+            for agent in neighbors:
+                if type(agent) is Endothelial:
+                    agent.oxy -= 1
+
         elif self.oxy < 60:
-            self.oxy - 1
+            self.oxy -= 1
+            for agent in neighbors:
+                if type(agent) is Endothelial:
+                    agent.oxy -= .5
+
 
     def step(self):
         self.heal_oxygen()
         self.attract_cells()
         self.decay_cytokines()
-        self.bacterial_growth()
+        #self.bacterial_growth()
 
 
 
