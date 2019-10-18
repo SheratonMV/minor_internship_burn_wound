@@ -96,6 +96,28 @@ def ugly_batch_run(step_count):
     plt.savefig('results/' + 'Bloodflow_batchrun.png', format='png', dpi=500, bbox_inches='tight')
     plt.show()
 
+    n = loop_fig(1)
+    plt.figure(n)
+    color = ['cyan', 'lightblue', 'steelblue', 'midnightblue', 'blue', 'limegreen', 'darkgreen', 'lime', 'lawngreen',
+             'lightgreen']
+    colorcount = 0
+    for frame in [AP1, AP2, AP3, AP4, AP5]:
+        plt.plot(frame["Collagen"], linewidth=lw, ls='-', label="AP", color=color[colorcount])
+        colorcount += 1
+    for frame in [NON_AP1, NON_AP2, NON_AP3, NON_AP4, NON_AP5]:
+        plt.plot(frame["Collagen"], linewidth=lw, ls='-', label="NON AP", color=color[colorcount])
+        colorcount += 1
+    plt.ylabel("Oxygen (Arbitrary units)", fontsize=fs)
+    plt.xlabel("Time (h)", fontsize=fs)
+    plt.title("Blood flow", fontsize=ts)
+    plt.ylim(0, 100)
+    plt.xlim(0, 120)
+    plt.legend(loc='best', fontsize=lfs)
+    plt.tick_params(labelsize=ls)
+    print('... Plotting Collagen')
+    plt.savefig('results/' + 'Collagen_batchrun.png', format='png', dpi=500, bbox_inches='tight')
+    plt.show()
+
 def run_model(treatment,step_count):
     if treatment == "NON-AP":
         model = WoundModel(50, 50, 50, 0.5, 0.5, 0.5, 0.5, 25, 25, 10, 0.7)
