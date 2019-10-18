@@ -124,7 +124,7 @@ class WoundModel(Model):
 
         self.running = True
 
-        self.datacollector = DataCollector(model_reporters={"Blood_flow": Blood_flow,"Collagen": Collagen, "Macrophages": lambda self: self.schedule.get_breed_count(Macrophage), "Neutrophils": lambda self: self.schedule.get_breed_count(Neutrophil), "Fibroblasts": lambda self: self.schedule.get_breed_count(Fibroblast), "Necrotic_neutrophils": lambda self: self.schedule.get_neutrophiltype_count(Neutrophil,"Necrotic"),"Apoptised_neutrophils": lambda self: self.schedule.get_neutrophiltype_count(Neutrophil,"Apoptotic"),"Phagocytized_neutrophils":lambda self: self.schedule.get_neutrophiltype_count(Neutrophil,"Phagocytized"), "TGFb":lambda self: heatmap(self, "TGFB"), "IL6": lambda self: heatmap(self, "IL6"), "IL10": lambda self: heatmap(self, "IL10"), "TNFa": lambda self: heatmap(self, "TNFa"), "Mac_phen": MacrophagePhenotypes})
+        self.datacollector = DataCollector(model_reporters={"Blood_flow": Blood_flow,"Collagen": Collagen, "Macrophages": lambda self: self.schedule.get_breed_count(Macrophage), "Neutrophils": lambda self: self.schedule.get_breed_count(Neutrophil), "Fibroblasts": lambda self: self.schedule.get_breed_count(Fibroblast), "Necrotic_neutrophils": lambda self: self.schedule.get_neutrophiltype_count(Neutrophil,"Necrotic"),"Apoptised_neutrophils": lambda self: self.schedule.get_neutrophiltype_count(Neutrophil,"Apoptotic"),"Phagocytized_neutrophils":lambda self: self.schedule.get_neutrophiltype_count(Neutrophil,"Phagocytized"), "TGFb":lambda self: heatmap(self, "TGFB"), "IL6": lambda self: heatmap(self, "IL6"), "IL10": lambda self: heatmap(self, "IL10"), "TNFa": lambda self: heatmap(self, "TNFa"), "Mac_phen": MacrophagePhenotypes, "Cytokines":NetCytokines})
 
     def blood_flow(self):
         agent_oxy = [agent.oxy for agent in self.schedule.agents if type(agent) is Endothelial]
@@ -188,4 +188,13 @@ def heatmap(model, entity):
                 map.append([agent.pos, agent.TNFa])
     return np.array(map)
 
+def NetCytokines(model):
+	IL6, IL10, TNFa, TGFb = 0,0,0,0
+	for agent in model.schedule.agents:
+		if type(agent) is Endothelial and agent.pos in model.wound_coord:
+			IL6 += agent.IL6
+			IL10 += agent.IL10
+			TNFa += agent.TNFa
+			TGFb += agent.TGFb
+	return [IL6, IL10, TNFa, TGFb]
 

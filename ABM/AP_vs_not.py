@@ -202,16 +202,13 @@ def AP_vs_not_model(step_count=120):
     plt.figure(n)
     mac_phen = cell_concentrations["Mac_phen"]
     mac_phen_AP = cell_concentrationsAP["Mac_phen"]
-    mac_1 =[]
-    mac_2 =[]
-    mac_1_AP =[]
-    mac_2_AP =[]
+    mac_1,mac_2,mac_1_AP,mac_2_AP =[],[],[],[]
     for x in mac_phen:
-    	mac_1.append(x[0])
-    	mac_2.append(x[1])
+        mac_1.append(x[0])
+        mac_2.append(x[1])
     for y in mac_phen_AP:
-    	mac_1_AP.append(y[0])
-    	mac_2_AP.append(y[1])
+        mac_1_AP.append(y[0])
+        mac_2_AP.append(y[1])
     plt.plot(mac_1,color = 'red', label='Placebo Phenotype 1')
     plt.plot(mac_2,color = 'blue', label='Placebo Phenotype 2')
     plt.plot(mac_1_AP,color = 'yellow', label='bIAP Phenotype 1')
@@ -226,6 +223,39 @@ def AP_vs_not_model(step_count=120):
     plt.tight_layout()
     print('... Plotting macrophage_phenotypes')
     plt.savefig('results/' + 'macrophage_phenotypes.png', format='png', dpi=500, bbox_inches='tight')
+
+    n = loop_fig(n)
+    plt.figure(n)
+    cytokines = cell_concentrations["Cytokines"]
+    cytokines_AP = cell_concentrationsAP["Cytokines"]
+    IL6,IL10,TNFa,TGFb,IL6_AP,IL10_AP,TNFa_AP,TGFb_AP =[],[],[],[],[],[],[],[]
+    for x in cytokines:
+        IL6.append(x[0])
+        IL10.append(x[1])
+        TNFa.append(x[2])
+        TGFb.append(x[3])
+    for y in cytokines_AP:
+        IL6_AP.append(y[0])
+        IL10_AP.append(y[1])
+        TNFa_AP.append(y[2])
+        TGFb_AP.append(y[3])
+    #plt.plot(IL6, label='Placebo IL6')
+    #plt.plot(IL6_AP, label='bIAP IL6')
+    #plt.plot(IL10, label='Placebo IL10')
+    #plt.plot(IL10_AP, label='bIAP IL10')
+    plt.plot(TNFa, label='Placebo TNFa')
+    plt.plot(TNFa_AP, label='bIAP TNFa')
+    plt.plot(TGFb, label='Placebo TGFb')
+    plt.plot(TGFb_AP, label='bIAP TGFb')
+    plt.ylabel("Net Cytokine Levels", fontsize=fs)
+    plt.xlabel("Time (h)", fontsize=fs)
+    plt.xlim(0, 120)
+    plt.legend(loc='best')
+    plt.title("Cytokine Levels", fontsize=ts)
+    plt.tick_params(labelsize=ls)
+    plt.tight_layout()
+    print('... Plotting cytokine levels')
+    plt.savefig('results/' + 'cytokines.png', format='png', dpi=500, bbox_inches='tight')
 
 def loop_fig(fignum):
     return fignum + 1

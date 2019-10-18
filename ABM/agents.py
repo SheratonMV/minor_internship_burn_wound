@@ -28,7 +28,7 @@ class Endothelial(Agent):
             self.attract_macrophage()
             self.macrophage_time = 0
 
-        if self.TNFa > 0.5 and self.oxy >= 25 and self.IL6 > 0.5 and self.IL10 < 1.5 and self.model.resting_neutrophils > 0 and self.oxy < 100 and self.model.blood_flow() < 80:
+        if self.TNFa > 0.5 and self.oxy >= 25 and self.IL6 > 0.5 and self.IL10 < 1.5 and self.model.resting_neutrophils > 0 and self.oxy < 100 and self.model.blood_flow() < 99:
             self.attract_neutrophil()
             self.neutrophil_time = 0
 
