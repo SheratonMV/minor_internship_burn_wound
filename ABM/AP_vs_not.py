@@ -198,6 +198,35 @@ def AP_vs_not_model(step_count=120):
     plt.title("TNFa", fontsize=ts)
     plt.savefig('results/' + 'TNFaAP.png', format='png', dpi=500, bbox_inches='tight')
 
+    n = loop_fig(n)
+    plt.figure(n)
+    mac_phen = cell_concentrations["Mac_phen"]
+    mac_phen_AP = cell_concentrationsAP["Mac_phen"]
+    mac_1 =[]
+    mac_2 =[]
+    mac_1_AP =[]
+    mac_2_AP =[]
+    for x in mac_phen:
+    	mac_1.append(x[0])
+    	mac_2.append(x[1])
+    for y in mac_phen_AP:
+    	mac_1_AP.append(y[0])
+    	mac_2_AP.append(y[1])
+    plt.plot(mac_1,color = 'red')
+    plt.plot(mac_2,color = 'blue')
+    plt.plot(mac_1_AP,color = 'yellow')
+    plt.plot(mac_2_AP,color = 'green')
+    plt.ylabel("Concentration (Arbitrary units)", fontsize=fs)
+    plt.xlabel("Time (h)", fontsize=fs)
+    plt.ylim(0, 100)
+    plt.xlim(0, 120)
+    plt.legend({ 'Placebo Phenotype 1','Placebo Phenotype 2','bIAP Phenotype 1', 'bIAP Phenotype 2' }, loc='best')
+    plt.title("Macrophage Phenotypes", fontsize=ts)
+    plt.tick_params(labelsize=ls)
+    plt.tight_layout()
+    print('... Plotting macrophage_phenotypes')
+    plt.savefig('results/' + 'macrophage_phenotypes.png', format='png', dpi=500, bbox_inches='tight')
+
 def loop_fig(fignum):
     return fignum + 1
 
