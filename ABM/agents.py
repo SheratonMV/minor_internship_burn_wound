@@ -28,7 +28,7 @@ class Endothelial(Agent):
             self.attract_macrophage()
             self.macrophage_time = 0
 
-        if self.TNFa > 0.5 and self.oxy >= 25 and self.IL6 > 0.5 and self.IL10 < 1.5 and self.model.resting_neutrophils > 0 and self.oxy < 100 and self.model.blood_flow() < 80:
+        if self.TNFa > 0.5 and self.oxy >= 25 and self.IL6 > 0.5 and self.IL10 < 1.5 and self.model.resting_neutrophils > 0 and self.oxy < 100 and self.model.blood_flow() < 99:
             self.attract_neutrophil()
             self.neutrophil_time = 0
 
@@ -88,7 +88,7 @@ class Endothelial(Agent):
            #     self.coll = 100
 
     def bacterial_growth(self):
-        neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=False)
+        '''neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=False)
 
         if self.oxy < 20:
             self.oxy -= 2
@@ -100,7 +100,7 @@ class Endothelial(Agent):
             self.oxy -= 1
             for agent in neighbors:
                 if type(agent) is Endothelial:
-                    agent.oxy -= .5
+                    agent.oxy -= .5'''
 
 
     def step(self):

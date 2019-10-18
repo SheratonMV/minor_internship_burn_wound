@@ -202,6 +202,7 @@ def AP_vs_not_model(step_count=120):
     plt.figure(n)
     mac_phen = cell_concentrations["Mac_phen"]
     mac_phen_AP = cell_concentrationsAP["Mac_phen"]
+<<<<<<< HEAD
     mac_1 =[]
     mac_2 =[]
     mac_1_AP =[]
@@ -212,6 +213,15 @@ def AP_vs_not_model(step_count=120):
     for y in mac_phen_AP:
     	mac_1_AP.append(y[0])
     	mac_2_AP.append(y[1])
+=======
+    mac_1,mac_2,mac_1_AP,mac_2_AP =[],[],[],[]
+    for x in mac_phen:
+        mac_1.append(x[0])
+        mac_2.append(x[1])
+    for y in mac_phen_AP:
+        mac_1_AP.append(y[0])
+        mac_2_AP.append(y[1])
+>>>>>>> d6ea893bbe6efe068d8afcba9a20f34fbab2ddcd
     plt.plot(mac_1,color = 'red', label='Placebo Phenotype 1')
     plt.plot(mac_2,color = 'blue', label='Placebo Phenotype 2')
     plt.plot(mac_1_AP,color = 'yellow', label='bIAP Phenotype 1')
@@ -231,7 +241,11 @@ def AP_vs_not_model(step_count=120):
     plt.figure(n)
     cytokines = cell_concentrations["Cytokines"]
     cytokines_AP = cell_concentrationsAP["Cytokines"]
+<<<<<<< HEAD
     IL6, IL10, TNFa, TGFb, IL6_AP, IL10_AP, TNFa_AP, TGFb_AP = [], [], [], [], [], [], [], []
+=======
+    IL6,IL10,TNFa,TGFb,IL6_AP,IL10_AP,TNFa_AP,TGFb_AP =[],[],[],[],[],[],[],[]
+>>>>>>> d6ea893bbe6efe068d8afcba9a20f34fbab2ddcd
     for x in cytokines:
         IL6.append(x[0])
         IL10.append(x[1])
@@ -242,6 +256,13 @@ def AP_vs_not_model(step_count=120):
         IL10_AP.append(y[1])
         TNFa_AP.append(y[2])
         TGFb_AP.append(y[3])
+<<<<<<< HEAD
+=======
+    #plt.plot(IL6, label='Placebo IL6')
+    #plt.plot(IL6_AP, label='bIAP IL6')
+    #plt.plot(IL10, label='Placebo IL10')
+    #plt.plot(IL10_AP, label='bIAP IL10')
+>>>>>>> d6ea893bbe6efe068d8afcba9a20f34fbab2ddcd
     plt.plot(TNFa, label='Placebo TNFa')
     plt.plot(TNFa_AP, label='bIAP TNFa')
     plt.plot(TGFb, label='Placebo TGFb')
