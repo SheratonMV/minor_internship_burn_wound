@@ -197,9 +197,4 @@ def NetCytokines(model):
 			IL10 += agent.IL10
 			TNFa += agent.TNFa
 			TGFb += agent.TGFb
-<<<<<<< HEAD
 	return [IL6, IL10, TNFa, TGFb]
-=======
-	return [IL6, IL10, TNFa, TGFb]
-
->>>>>>> d6ea893bbe6efe068d8afcba9a20f34fbab2ddcd
