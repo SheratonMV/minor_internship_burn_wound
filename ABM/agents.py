@@ -88,26 +88,26 @@ class Endothelial(Agent):
            #     self.coll = 100
 
     def bacterial_growth(self):
-        '''neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=False)
+        neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=False)
 
         if self.oxy < 20:
-            self.oxy -= 2
-            for agent in neighbors:
-                if type(agent) is Endothelial:
-                    agent.oxy -= 1
-
-        elif self.oxy < 60:
             self.oxy -= 1
             for agent in neighbors:
                 if type(agent) is Endothelial:
-                    agent.oxy -= .5'''
+                    agent.oxy -= 0.5
+
+        elif self.oxy < 60:
+            self.oxy -= 0.5
+            for agent in neighbors:
+                if type(agent) is Endothelial:
+                    agent.oxy -= .25
 
 
     def step(self):
         self.heal_oxygen()
         self.attract_cells()
         self.decay_cytokines()
-        #self.bacterial_growth()
+
 
 
 
@@ -308,6 +308,7 @@ class Macrophage(Agent):
                     agent.TGFb = agent.TGFb + 0.1
                     agent.IL10 = agent.IL10 + 0.07
                     agent.TNFa = agent.TNFa + 0.01
+
             self.energy = self.energy - 0.05
 
     def apoptise_neutrophil(self):
@@ -419,11 +420,11 @@ class Fibroblast(Agent):
                         self.secrete_collagen()
                         self.secrete_TGFb()
                         self.energy -= 0.005
-        if self.collagen <= 5:
+        if self.collagen <= 1:
             self.energy = 0
 
 
         #When the wound is repaired fibroblasts are apoptised
         if self.model.Collagen() > 100:
-            self.collagen -= 5
+            self.collagen -= 2
             #self.energy -= 0.03

@@ -25,7 +25,7 @@ plt.xlabel("PDGF ($pg/mm^3$)", fontsize=fs)
 plt.tick_params(labelsize=ls)
 plt.tight_layout()
 print('... Plotting macrophages')
-plt.savefig('results/' + 'PDGF-FIBRO.png', format='png', dpi=500, bbox_inches='tight')
+plt.savefig('result/' + 'PDGF-FIBRO.png', format='png', dpi=500, bbox_inches='tight')
 
 x = numpy.linspace(0,1400,100) # 100 linearly spaced numbers
 y = 0.1378065 - 0.0005775911*x + 9.28343e-7*x**2 - 4.441029e-10*x**3
@@ -41,7 +41,7 @@ plt.xlabel(" Collagen $(\u03bcg/mm^3$)", fontsize=fs)
 plt.tick_params(labelsize=ls)
 plt.tight_layout()
 print('... Plotting coll-coll')
-plt.savefig('results/' + 'Coll-coll.png', format='png', dpi=500, bbox_inches='tight')
+plt.savefig('result/' + 'Coll-coll.png', format='png', dpi=500, bbox_inches='tight')
 
 x = numpy.linspace(0,9,100) # 100 linearly spaced numbers
 y = 0.2151515 + 0.6137554 * x - 0.149513 * x ** 2 + 0.008787879 * x ** 3
@@ -57,5 +57,21 @@ plt.xlabel(" TGFB $(\u03bcg/mm^3$)", fontsize=fs)
 plt.tick_params(labelsize=ls)
 plt.tight_layout()
 print('... Plotting tgfb-coll')
-plt.savefig('results/' + 'tgfb-coll.png', format='png', dpi=500, bbox_inches='tight')
+plt.savefig('result/' + 'tgfb-coll.png', format='png', dpi=500, bbox_inches='tight')
 
+x = numpy.linspace(0,100,100) # 100 linearly spaced numbers
+y = 0.0492 * x**3 - 0.9868 * x**2 + 6.5408 * x +7.1092
+
+
+n = loop_fig(n)
+plt.figure(n)
+plt.plot(x,y/24, linewidth=lw, ls='-', color = "#377eb8" )
+plt.xlim(0,5)
+plt.ylim(0,1)
+plt.ylabel("Fibroblats activation ratio", fontsize=fs)
+plt.xlabel(" TGFB $(\u03bcg/mm^3$)", fontsize=fs)
+#plt.title("Collagen production ratio by TGFB", fontsize=ts)
+plt.tick_params(labelsize=ls)
+plt.tight_layout()
+print('... Plotting Fibro-tgfb')
+plt.savefig('result/' + 'Fibro-tgfb.png', format='png', dpi=500, bbox_inches='tight')

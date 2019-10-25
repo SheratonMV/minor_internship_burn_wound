@@ -10,32 +10,42 @@ def run_calibration_test(step_count=120):
 
 
     lw = 5  # Linewidth
-    ls = 10 # Labelsize
-    fs = 15 # Fontsize
+    ls = 15 # Labelsize
+    fs = 20 # Fontsize
     lfs = 15 # Fontsize legend
     ts = 15 # Title size
 
+    mac_phen = cell_concentrations["Mac_phen"]
+    mac_1 = []
+    mac_2 = []
+    for x in mac_phen:
+        mac_1.append(x[0])
+        mac_2.append(x[1])
 
     n = loop_fig(1)
     plt.figure(n)
-    plt.plot(cell_concentrations["Macrophages"], linewidth=lw, ls='-')
-    plt.plot(cell_concentrations["Neutrophils"], linewidth=lw, ls='-')
-    plt.plot(cell_concentrations["Fibroblasts"], linewidth=lw, ls='-')
+    plt.plot(cell_concentrations["Neutrophils"], linewidth=lw, ls='-', label = 'Neutrophils')
+    plt.plot(mac_1, linewidth=lw, ls='-', label = 'M1 macrophages')
+    plt.plot(mac_2, linewidth=lw, ls='-', label = 'M2 macrophages')
+    plt.plot(cell_concentrations["Fibroblasts"], linewidth=lw, ls='-', label = 'Fibroblasts')
     plt.xlim(0,120)
     plt.ylabel("Concentration (Arbitrary units)", fontsize=fs)
     plt.xlabel("Time (h)", fontsize=fs)
 
-    plt.legend({ 'Fibroblasts', 'Macrophages', 'Neutrophils', }, loc='best', fontsize=lfs)
+    plt.legend(loc='best', fontsize=lfs)
     plt.tick_params(labelsize=ls)
     plt.tight_layout()
     print('... Plotting macrophages, neutrophils and fibroblasts')
     plt.savefig('results/' + 'all.png', format='png', dpi=500, bbox_inches='tight')
 
+
+
+
     n = loop_fig(n)
     plt.figure(n)
-    plt.plot(cell_concentrations["Blood_flow"], linewidth=lw, ls='-', color = 'red')
-    plt.plot(cell_concentrations["Collagen"], linewidth=lw, ls='-', color = 'black')
-    plt.legend({'Oxygen', 'Collagen' }, loc='best', fontsize=lfs)
+    plt.plot(cell_concentrations["Blood_flow"], linewidth=lw, ls='-', color = 'red', label = 'Oxygen')
+    plt.plot(cell_concentrations["Collagen"], linewidth=lw, ls='-', color = 'black', label = 'Collagen')
+    plt.legend(loc='best', fontsize=lfs)
     plt.xlim(0, 120)
     plt.ylabel("Concentration (Arbitrary units)", fontsize=fs)
     plt.xlabel("Time (h)", fontsize=fs)

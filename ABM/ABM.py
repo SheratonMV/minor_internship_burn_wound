@@ -157,7 +157,6 @@ class WoundModel(Model):
 def Blood_flow(model):
     agent_oxy = [agent.oxy for agent in model.schedule.agents if type(agent) is Endothelial and agent.pos in model.wound_coord]
     oxy_total = sum(agent_oxy)
-
     return oxy_total/(len(model.wound_coord))
 
 def Collagen(model):
