@@ -1,8 +1,8 @@
 # APSim_Model.py
 
-**Combined ODE model simulating systemic inflammation and regenerationof collagen under different clinical conditions.** \
+**Combined ODE model simulating systemic inflammation and regenerationof collagen under different clinical conditions.** 
 
-Extended version of the HIIS model. edited by Ben Dickens and Mark de Boer.
+Extended version of the HIIS model. Edited by Ben Dickens and Mark de Boer.
 This code aims to simulate the innate immune response coupled with the induction mechanism of alkaline phosphatase.
 
 ## Prerequisites
