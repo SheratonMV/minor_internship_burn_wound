@@ -7,10 +7,10 @@
 
 ##### To perform a single run comparing AP with NON-AP:
 ```
- python run.py
+ python AP_vs_not.py
 ```
 
-##### To open an online vizualization tool demonstrating the framework:
+##### To perform a 50-run batchrun measuring the final health statuses:
 ```
- python run.py
+ python bathcrun.py
 ```
