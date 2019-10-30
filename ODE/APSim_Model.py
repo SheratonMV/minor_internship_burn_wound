@@ -64,17 +64,8 @@ def vectorfield(w, t, p, params ):
     t_ITM_source = 5. * 60.
     t_inject = 8. * 60.
 
-
-    #values to add
-
-
     crowding = FIBRO/MAX_FIBRO + COLL/MAX_COLL + M_A/MAX_M_A
-
-
-
     WOUND = max((1-COLL/1200),0)
-
-
 
     if params['h'] == 'h4':
         hypothesis = (rinduce_peak / (1 + np.exp(rinduce*(t - delay_AP)))) * (AP_Sblood + AP_Stissue)
