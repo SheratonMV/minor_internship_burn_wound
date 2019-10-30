@@ -1,26 +1,25 @@
 
 '''
-Wound healing ABM Prediction Model
+A proof of concept two-dimensional ABM, simulating the clearing and regeneration of the debris.
+The proposed ABM interface models the interactions between the endothelial cells, inflammatory cells
+(neutrophils and macrophages), fibroblasts and their key mediator cytokines and
+growth factors (IL-6, IL-10, TNF-a and TGF-B) under the assumption that a completely
+regenerated debris can always be achieved.
+
+Authors: Ben Dickens and Mark de Boer
 ================================
 '''
 
 from mesa.space import MultiGrid
 from mesa import Agent, Model
-from mesa.time import RandomActivation
 from mesa.datacollection import DataCollector
-
 from agents import Neutrophil, Macrophage, Fibroblast, Endothelial
 from coordinates import *
 from schedule import RandomActivationByAgent
-
-import matplotlib.pyplot as plt
 import numpy as np
-#from batchrun import batch_run
-from mesa.batchrunner import BatchRunner
-
 
 class WoundModel(Model):
-    """An ABM wound healing model simulating inflammation and contraction."""
+    """An ABM wound healing model simulating inflammation and collagen regeneration."""
     def __init__(self, Neutrophils, Macrophages, Fibroblasts, IL10,IL6,TNFa,TGFb,  width, height, wound_radius, coagulation):
 
         self.running = True
@@ -45,7 +44,6 @@ class WoundModel(Model):
         #create wound and non-wound region
         self.all_coordinates = all_coordinates(self.grid.width, self.grid.height)
         self.wound_radius = wound_radius
-        #self.wound_coord = square_wound_area(self.grid.width, self.grid.height, self.wound_radius) # square shaped wound
         self.wound_coord = circle_wound_area(self.grid.width, self.grid.height, self.wound_radius, self.all_coordinates) #ellipse shaped wound
         self.coagulation_coord = circle_wound_area(self.grid.width, self.grid.height, self.coagulation_size, self.all_coordinates)
         self.healthy = circle_wound_area(self.grid.width, self.grid.height, self.wound_radius+1, self.all_coordinates)
@@ -53,10 +51,13 @@ class WoundModel(Model):
         self.non_wound_coord = []
         self.inflammation_coord = []
         self.fibroblast_area = []
+
+        # Retrieving coordinates of the zone of stasis
         for coordinates in self.wound_coord:
             if coordinates not in self.coagulation_coord:
                 self.inflammation_coord += [coordinates]
 
+        # Retrieving coordinates of outer layer if the wound where fibroblasts are placed
         for coordinates in self.healthy:
             if coordinates not in self.wound_coord:
                 self.fibroblast_area += [coordinates]
@@ -124,14 +125,15 @@ class WoundModel(Model):
             self.grid.place_agent(a, (x, y))
 
         self.running = True
-
         self.datacollector = DataCollector(model_reporters={"Blood_flow": Blood_flow,"Collagen": Collagen, "Macrophages": lambda self: self.schedule.get_breed_count(Macrophage), "Neutrophils": lambda self: self.schedule.get_breed_count(Neutrophil), "Fibroblasts": lambda self: self.schedule.get_breed_count(Fibroblast), "Necrotic_neutrophils": lambda self: self.schedule.get_neutrophiltype_count(Neutrophil,"Necrotic"),"Apoptised_neutrophils": lambda self: self.schedule.get_neutrophiltype_count(Neutrophil,"Apoptotic"),"Phagocytized_neutrophils":lambda self: self.schedule.get_neutrophiltype_count(Neutrophil,"Phagocytized"), "TGFb":lambda self: heatmap(self, "TGFB"), "IL6": lambda self: heatmap(self, "IL6"), "IL10": lambda self: heatmap(self, "IL10"), "TNFa": lambda self: heatmap(self, "TNFa"), "Mac_phen": MacrophagePhenotypes, "Cytokines":NetCytokines})
 
+    # Calculating normalized blood flow over the whole wound area
     def blood_flow(self):
         agent_oxy = [agent.oxy for agent in self.schedule.agents if type(agent) is Endothelial]
         oxy_total = sum(agent_oxy)
         return oxy_total / len(self.all_coordinates)
 
+    # Calculating normalized collagen content over the whole wound area
     def Collagen(self):
         agent_coll = [agent.coll for agent in self.schedule.agents if type(agent) is Endothelial]
         coll_total = sum(agent_coll)
@@ -151,9 +153,8 @@ class WoundModel(Model):
         if self.timer % 8 == 0:
             self.resting_fibroblasts += 1
 
-
-
-
+''' Calculating normalized blood flow and collagen levels over the whole wound area again. An extra function outside
+the model was demanded to prevent the model becoming terribly slow'''
 def Blood_flow(model):
     agent_oxy = [agent.oxy for agent in model.schedule.agents if type(agent) is Endothelial and agent.pos in model.wound_coord]
     oxy_total = sum(agent_oxy)

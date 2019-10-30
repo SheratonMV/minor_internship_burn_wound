@@ -4,44 +4,15 @@
     <list default="true" id="266acaa8-f5e9-45a1-b525-882b6900925d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ABM/ABM.py" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/ABM.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/AP_vs_not.py" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/AP_vs_not.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ABM/Calibration_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/Calibration_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ABM/Untitled.ipynb" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/ABM/agents.py" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/agents.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/batchrun.py" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/batchrun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/Bloodflow_batchrun.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/Bloodflow_batchrun7.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/Boxplot.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/Boxplot_bloodflow.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/Boxplot_collagen.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/Coll-coll.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/Collagen.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/Collagen_batchrun.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/Fibroblasts.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/IL10.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/IL10AP.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/IL6.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/IL6AP.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/Macrophages.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/Neutrophils.png" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/results/Neutrophils.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/P(F).png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/PDGF-FIBRO.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/TGFb.png" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/results/TGFb.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/TNFa.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/TNFaAP.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/all.png" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/results/all.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/blood.png" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/results/blood.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/cytokines.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/good/Collagen.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/good/Fibroblasts.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/good/Macrophages.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/good/Neutrophils.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/good/oxygen.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/macrophage_phenotypes.png" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/results/macrophage_phenotypes.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/oxygen.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/tgfb-coll.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/tgfb.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ABM/results/tgfbAP.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ODE/test/plots HIIS.py" beforeDir="false" afterPath="$PROJECT_DIR$/ODE/test/plots HIIS.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ABM/all.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ABM/coordinates.py" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/coordinates.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ABM/correct_but_slow_data_collector.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ABM/schedule.py" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/schedule.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ABM/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/ABM/server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ABM/test.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -51,37 +22,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ABM/server.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="10" column="48" selection-start-line="10" selection-start-column="48" selection-end-line="10" selection-end-column="48" />
-              <folding>
-                <element signature="e#0#49#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ABM/schedule.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="326">
-              <caret line="76" column="25" selection-start-line="76" selection-start-column="25" selection-end-line="76" selection-end-column="25" />
-              <folding>
-                <element signature="e#0#35#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ABM/agents.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="143">
-              <caret line="58" column="31" lean-forward="true" selection-start-line="58" selection-start-column="31" selection-end-line="58" selection-end-column="42" />
+            <state relative-caret-position="5168">
+              <caret line="405" column="16" selection-start-line="405" selection-start-column="16" selection-end-line="405" selection-end-column="16" />
               <folding>
-                <element signature="e#0#13#0" expanded="true" />
+                <element signature="e#1#23#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -90,8 +37,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ABM/batchrun.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="445">
-              <caret line="298" column="20" selection-start-line="298" selection-start-column="20" selection-end-line="298" selection-end-column="20" />
+            <state relative-caret-position="170">
+              <caret line="300" lean-forward="true" selection-start-line="300" selection-end-line="300" />
               <folding>
                 <element signature="e#0#40#0" expanded="true" />
               </folding>
@@ -100,10 +47,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ABM/Calibration_test.py">
+        <entry file="file://$PROJECT_DIR$/ABM/AP_vs_not.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="493">
-              <caret line="29" column="51" selection-start-line="29" selection-start-column="51" selection-end-line="29" selection-end-column="51" />
+            <state relative-caret-position="394">
+              <caret line="299" column="22" selection-start-line="299" selection-start-column="22" selection-end-line="299" selection-end-column="22" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -163,23 +110,24 @@
         <option value="$PROJECT_DIR$/ODE/plots HIIS.py" />
         <option value="$PROJECT_DIR$/ODE/Parameters.py" />
         <option value="$PROJECT_DIR$/ODE/APSim_Model.py" />
-        <option value="$PROJECT_DIR$/ABM/schedule.py" />
-        <option value="$PROJECT_DIR$/ABM/server.py" />
         <option value="$PROJECT_DIR$/ABM/venv/Lib/site-packages/mesa/batchrunner.py" />
         <option value="$PROJECT_DIR$/ABM/batchrunner.py" />
-        <option value="$PROJECT_DIR$/ABM/ABM.py" />
         <option value="$PROJECT_DIR$/ODE/test/plots HIIS.py" />
-        <option value="$PROJECT_DIR$/ABM/Calibration_test.py" />
         <option value="$PROJECT_DIR$/ABM/AP_vs_not.py" />
         <option value="$PROJECT_DIR$/ABM/batchrun.py" />
+        <option value="$PROJECT_DIR$/ABM/schedule.py" />
+        <option value="$PROJECT_DIR$/ABM/Calibration_test.py" />
+        <option value="$PROJECT_DIR$/ABM/coordinates.py" />
+        <option value="$PROJECT_DIR$/ABM/server.py" />
+        <option value="$PROJECT_DIR$/ABM/ABM.py" />
         <option value="$PROJECT_DIR$/ABM/agents.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
-    <option name="x" value="-967" />
-    <option name="width" value="974" />
-    <option name="height" value="1047" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="406" />
+    <option name="width" value="960" />
+    <option name="height" value="768" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -204,17 +152,6 @@
               <item name="minor_internship_burn_wound" type="462c0819:PsiDirectoryNode" />
               <item name="ABM" type="462c0819:PsiDirectoryNode" />
               <item name="venv" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="minor_internship_burn_wound" type="b2602c69:ProjectViewProjectNode" />
-              <item name="minor_internship_burn_wound" type="462c0819:PsiDirectoryNode" />
-              <item name="ODE" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="minor_internship_burn_wound" type="b2602c69:ProjectViewProjectNode" />
-              <item name="minor_internship_burn_wound" type="462c0819:PsiDirectoryNode" />
-              <item name="ODE" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -254,7 +191,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Calibration_test">
+  <component name="RunManager" selected="Python.run">
     <configuration name="AP_vs_not" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="minor_internship_burn_wound" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -397,8 +334,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.Calibration_test" />
         <item itemvalue="Python.run" />
+        <item itemvalue="Python.Calibration_test" />
         <item itemvalue="Python.batchrun" />
         <item itemvalue="Python.AP_vs_not" />
         <item itemvalue="Python.plots HIIS" />
@@ -419,22 +356,23 @@
       <workItem from="1570093651342" duration="9570000" />
       <workItem from="1570534033580" duration="13904000" />
       <workItem from="1570697841138" duration="96861000" />
-      <workItem from="1571743307892" duration="28477000" />
+      <workItem from="1571743307892" duration="30836000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="175853000" />
+    <option name="totallyTimeSpent" value="178212000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-967" y="0" width="974" height="1047" extended-state="1" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.3358862" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2322239" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49946696" visible="true" weight="0.17286652" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49946696" visible="true" weight="0.25859246" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -473,7 +411,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/minor_internship_burn_wound$run.coverage" NAME="run Coverage Results" MODIFIED="1571932599506" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ABM" />
+    <SUITE FILE_PATH="coverage/minor_internship_burn_wound$run.coverage" NAME="run Coverage Results" MODIFIED="1572451590230" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ABM" />
     <SUITE FILE_PATH="coverage/minor_internship_burn_wound$batchrun.coverage" NAME="batchrun Coverage Results" MODIFIED="1571929294571" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ABM" />
     <SUITE FILE_PATH="coverage/minor_internship_burn_wound$Calibration_test.coverage" NAME="Calibration_test Coverage Results" MODIFIED="1572002840351" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ABM" />
     <SUITE FILE_PATH="coverage/minor_internship_burn_wound$AP_vs_not.coverage" NAME="AP_vs_not Coverage Results" MODIFIED="1571927459921" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ABM" />
@@ -483,16 +421,6 @@
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/HIIS/APSim_Model.py" />
-    <entry file="file://$PROJECT_DIR$/ABM/coordinates.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ABM/run.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="15" selection-start-line="2" selection-start-column="15" selection-end-line="2" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ABM/venv/Lib/site-packages/mesa/model.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -525,16 +453,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ABM/server.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="10" column="48" selection-start-line="10" selection-start-column="48" selection-end-line="10" selection-end-column="48" />
-          <folding>
-            <element signature="e#0#49#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ODE/test/plots HIIS.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="887">
@@ -559,27 +477,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ABM/ABM.py">
+    <entry file="file://$PROJECT_DIR$/ABM/Calibration_test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="397">
-          <caret line="127" column="342" selection-start-line="127" selection-start-column="320" selection-end-line="127" selection-end-column="342" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ABM/AP_vs_not.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="632">
-          <caret line="299" column="22" selection-start-line="299" selection-start-column="22" selection-end-line="299" selection-end-column="22" />
+        <state relative-caret-position="51">
+          <caret line="3" selection-start-line="3" selection-end-line="3" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ABM/Calibration_test.py">
+    <entry file="file://$PROJECT_DIR$/ABM/AP_vs_not.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="29" column="51" selection-start-line="29" selection-start-column="51" selection-end-line="29" selection-end-column="51" />
+        <state relative-caret-position="394">
+          <caret line="299" column="22" selection-start-line="299" selection-start-column="22" selection-end-line="299" selection-end-column="22" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
           </folding>
@@ -588,18 +499,66 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ABM/schedule.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="326">
-          <caret line="76" column="25" selection-start-line="76" selection-start-column="25" selection-end-line="76" selection-end-column="25" />
+        <state relative-caret-position="394">
+          <caret line="81" column="50" selection-start-line="81" selection-start-column="50" selection-end-line="81" selection-end-column="50" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/ABM/test.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ABM/Untitled.ipynb">
+      <provider selected="true" editor-type-id="jupyter-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ABM/correct_but_slow_data_collector.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ABM/coordinates.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="88" selection-start-column="88" selection-end-column="88" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ABM/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor />
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ABM/run.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="15" selection-start-line="2" selection-start-column="15" selection-end-line="2" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ABM/server.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" selection-start-line="4" selection-end-line="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ABM/ABM.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1887">
+          <caret line="8" column="37" selection-start-line="8" selection-start-column="37" selection-end-line="8" selection-end-column="37" />
+          <folding>
+            <element signature="e#78#110#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/ABM/batchrun.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="445">
-          <caret line="298" column="20" selection-start-line="298" selection-start-column="20" selection-end-line="298" selection-end-column="20" />
+        <state relative-caret-position="170">
+          <caret line="300" lean-forward="true" selection-start-line="300" selection-end-line="300" />
           <folding>
             <element signature="e#0#40#0" expanded="true" />
           </folding>
@@ -608,10 +567,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ABM/agents.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="143">
-          <caret line="58" column="31" lean-forward="true" selection-start-line="58" selection-start-column="31" selection-end-line="58" selection-end-column="42" />
+        <state relative-caret-position="5168">
+          <caret line="405" column="16" selection-start-line="405" selection-start-column="16" selection-end-line="405" selection-end-column="16" />
           <folding>
-            <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#1#23#0" expanded="true" />
           </folding>
         </state>
       </provider>

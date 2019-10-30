@@ -1,4 +1,4 @@
-# determining the x,y coordinates of the whole model and of the wound area
+# determining the x,y coordinates of the whole gridspace and of a squared/circular wound area
 
 import numpy as np
 

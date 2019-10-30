@@ -8,7 +8,6 @@ def run_calibration_test(step_count=120):
         model.step()
     cell_concentrations = model.datacollector.get_model_vars_dataframe()
 
-
     lw = 5  # Linewidth
     ls = 15 # Labelsize
     fs = 20 # Fontsize
@@ -31,15 +30,11 @@ def run_calibration_test(step_count=120):
     plt.xlim(0,120)
     plt.ylabel("Concentration (Arbitrary units)", fontsize=fs)
     plt.xlabel("Time (h)", fontsize=fs)
-
     plt.legend(loc='best', fontsize=lfs)
     plt.tick_params(labelsize=ls)
     plt.tight_layout()
     print('... Plotting macrophages, neutrophils and fibroblasts')
-    plt.savefig('results/' + 'all.png', format='png', dpi=500, bbox_inches='tight')
-
-
-
+    plt.savefig('results/' + 'callibration_cells.png', format='png', dpi=500, bbox_inches='tight')
 
     n = loop_fig(n)
     plt.figure(n)
@@ -49,7 +44,6 @@ def run_calibration_test(step_count=120):
     plt.xlim(0, 120)
     plt.ylabel("Concentration (Arbitrary units)", fontsize=fs)
     plt.xlabel("Time (h)", fontsize=fs)
-
     plt.tick_params(labelsize=ls)
     plt.tight_layout()
     print('... Plotting blood flow and oxygen content')

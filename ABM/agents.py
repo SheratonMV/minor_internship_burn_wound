@@ -1,4 +1,3 @@
-import random
 from mesa import Agent
 import numpy as np
 import math as m
@@ -6,10 +5,11 @@ import math as m
 
 class Endothelial(Agent):
     """" An Endotheial non-mobile agent imbedded in the grid-space of the model.
-    variables:
     oxy -> oxygen level of the epithelial cell ranging from 0 to 100 (indicates the 'health' status)
-    Oxy simulates the effect of downstream ischemia
-    other celltypes can spawn on this part of the grid whenever oxy > 25
+    Oxy simulates the effect of bacterial population.
+    Other celltypes can spawn on this part of the grid whenever oxy > 25
+    coll -> collagen level of that grid space ranging from 0 to 100 (indicates the 'health' status)
+    pos -> position in the grid space
     """
 
     def __init__(self, unique_id, pos, oxy,coll, IL10, IL6,TNFa, TGFb, model):
@@ -24,6 +24,8 @@ class Endothelial(Agent):
 
 
     def attract_cells(self):
+        """ Rules to whenever new macrophages/neutrophils/fibroblasts should be attracted. """
+
         if self.TNFa > 2 and self.oxy >= 25 and self.IL10 < 1.5 and self.model.timer % 2 == 0 and self.model.resting_macrophages > 0 and self.coll < 100:
             self.attract_macrophage()
             self.macrophage_time = 0
@@ -55,12 +57,10 @@ class Endothelial(Agent):
         self.model.resting_fibroblasts -= 1
 
     def decay_cytokines(self):
-
         decay_rate_cytokines = 2.7648 / 24  # per hour
         decay_rate_TGFB = 9.072 / 24  # per hour
 
         for i in (self.IL6, self.IL10, self.TNFa, self.TGFb):
-
             if i == self.TGFb: decay_rate = decay_rate_TGFB
             else: decay_rate = decay_rate_cytokines
 
@@ -79,13 +79,6 @@ class Endothelial(Agent):
             self.oxy += 10
             if self.oxy > 100:
                 self.oxy = 100
-
-        #neighbors_coll = [agent.coll for agent in neighbors if type(agent) is Endothelial]
-        #neighbors_coll = sum(neighbors_coll)
-        #if neighbors_coll >= 700 and self.oxy < 100:
-         #   self.coll += 10
-          #  if self.coll > 100:
-           #     self.coll = 100
 
     def bacterial_growth(self):
         neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=False)
@@ -108,13 +101,9 @@ class Endothelial(Agent):
         self.attract_cells()
         self.decay_cytokines()
 
-
-
-
-
-
 class Neutrophil(Agent):
-    """ An agent with fixed initial energy."""
+    """ A mobile neutrophil agent that heals oxygen content and secretes cytokines over time.
+    Energy variable represents the lifespan"""
 
     def __init__(self, unique_id, pos, centre, model):
         super().__init__(unique_id, model)
@@ -128,7 +117,7 @@ class Neutrophil(Agent):
         possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False)
         neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=False)
 
-
+        # Can only move in the inflamed area
         for agent in neighbors:
             if type(agent) is Endothelial:
                 if agent.oxy >= 100:
@@ -142,6 +131,8 @@ class Neutrophil(Agent):
         if new_position != []:
             new_position = self.random.choice(new_position)
             self.model.grid.move_agent(self, new_position)
+
+        # If there is no new possible position move to the grid space with the highest TNFa and lowest IL-6
         else:
             neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=True)
             possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=True)
@@ -155,13 +146,11 @@ class Neutrophil(Agent):
             self.model.grid.move_agent(self, new_position)
 
 
-
     def update_cytokines(self):
         """" Updates Cytokine levels of all neighbours """
         neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=True)
         for agent in neighbors:
             if type(agent) is Endothelial and agent.pos == self.pos:
-                #agent.TNFa += 0.01 - agent.IL10*0.01 - agent.TGFb* 0.01 + agent.IL6*0.01
                 agent.TNFa += 0.002
             elif type(agent) is Endothelial:
                 agent.TNFa += 0.001
@@ -170,8 +159,6 @@ class Neutrophil(Agent):
     def heal(self):
         """" heals EC its on and the neighbors a bit"""
 
-        #cellmates = self.model.grid.get_cell_list_contents([self.pos])
-
         neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=True)
         for agent in neighbors:
             if type(agent) is Endothelial and agent.pos == self.pos:
@@ -187,15 +174,13 @@ class Neutrophil(Agent):
                     else:
                         agent.oxy += 1
 
-
-
     def necrosis(self):
+        """" After losing their energy, neutrophils become necrotic after 5 steps if not phagocytized by macrophages."""
         self.apoptotic_hours += 1
         if self.apoptotic_hours == 5:
             neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=True)
             for agent in neighbors:
                 if type(agent) is Endothelial and agent.pos == self.pos:
-                    # agent.TNFa += 0.01 - agent.IL10*0.01 - agent.TGFb* 0.01 + agent.IL6*0.01
                     agent.TNFa += 0.004
                     agent.oxy -= 5
                 elif type(agent) is Endothelial:
@@ -205,9 +190,6 @@ class Neutrophil(Agent):
             self.phagocytized = True
 
     def step(self):
-        """Step:
-        if energy < 0: neutrophil is considered apoptised"""
-
         if self.phagocytized:
             pass
         elif self.energy <= 0 and not self.phagocytized:
@@ -224,17 +206,12 @@ class Neutrophil(Agent):
                 if type(agent) is Endothelial:
                     energy_loss_IL10 = agent.IL10 *0.01
 
-
-
             self.energy = self.energy - 0.03 - energy_loss_IL10
 
-
-
-
-
-
 class Macrophage(Agent):
-    """ A Macrophage agent"""
+    """ A Macrophage agent able to change phenotype: phenotype 0 (M1) and  phenotype 1 (M2).
+     Macrophages that heal oxygen content and secrete cytokines and growth factors over time.
+    """
 
     def __init__(self, unique_id, pos, model):
         super().__init__(unique_id, model)
@@ -249,7 +226,8 @@ class Macrophage(Agent):
         possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False)
         neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=False)
         towards_neutrophil = []
-        # only migration over the non-wounded areas.
+
+        # only migration over the inflamed areas.
         for agent in neighbors:
             if type(agent) is Neutrophil and agent.energy <= 0 and not agent.phagocytized:
                 towards_neutrophil.append(agent.pos)
@@ -259,16 +237,18 @@ class Macrophage(Agent):
                 elif agent.coll >= 100:
                     possible_steps.remove(agent.pos)
 
+        # It initially moves towards neutrophils that lost their energy, causing change in phenotype
         if towards_neutrophil != []:
             new_position = self.random.choice(towards_neutrophil)
             self.model.grid.move_agent(self, new_position)
             self.phenotype = 1
 
-
+        # If thats not possible, it will move towards another possible step
         elif possible_steps != []:
             new_position = self.random.choice(possible_steps)
             self.model.grid.move_agent(self, new_position)
 
+        # Else move to highest IL-6 and TNFa concentration.
         else:
             neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=True)
             possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=True)
@@ -281,9 +261,8 @@ class Macrophage(Agent):
             new_position = possible_steps[np.argmin(dist_2)]
             self.model.grid.move_agent(self, new_position)
 
-
-
     def secrete(self):
+        """" Update Cytokine and growth factor levels based on phenotype """
         neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=True)
         counter = 0
         modulation = 0
@@ -317,7 +296,6 @@ class Macrophage(Agent):
             if type(agent) == Neutrophil and agent.energy <= 0 and not agent.phagocytized:
                 agent.phagocytized = True
 
-
     def step(self):
         if self.energy <= 0:
             pass
@@ -331,8 +309,9 @@ class Macrophage(Agent):
 
 
 class Fibroblast(Agent):
-    """ A fibroblast agent has an energy variable representing the lifespan. if energy == 0 than fibroblast is apoptised.
-    Each activated has a specific amount of collagen it can secrete. The amount of secretion after each step depends on the TGFb concentration """
+    """ A fibroblast agent has an energy variable representing the lifespan.
+    Each activated has a specific amount of collagen it can secrete.
+    The amount of secretion after each step depends on the TGFb and IL-6 concentration """
 
     def __init__(self, unique_id, pos, model):
         super().__init__(unique_id, model)
@@ -358,6 +337,8 @@ class Fibroblast(Agent):
         if possible_steps != []:
             new_position = self.random.choice(possible_steps)
             self.model.grid.move_agent(self, new_position)
+
+        # If no possible steps move to grid neighbour wth highest TGFB concentration.
         else:
             neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=True)
             possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=True)
@@ -380,9 +361,7 @@ class Fibroblast(Agent):
                 TGFb_neigbors += [agent.TGFb]
                 IL6_neigbors += [agent.IL6]
 
-        # actually 1+ deactivating cytokines but not included in this model
         Collagen_stimulation_factor =  m.log((1 + sum(TGFb_neigbors)/9 + sum(IL6_neigbors)/9)/1)
-
 
         for agent in neighbors:
             if type(agent) is Endothelial and agent.pos == self.pos:
@@ -393,7 +372,6 @@ class Fibroblast(Agent):
                 if agent.coll < 100 and self.collagen >= self.collagen_secretion:
                     agent.coll += self.collagen_secretion * Collagen_stimulation_factor
                     self.collagen -= self.collagen_secretion * Collagen_stimulation_factor
-
 
     def secrete_TGFb(self):
         neighbors = self.model.grid.get_neighbors(self.pos, 1, include_center=True)
@@ -405,8 +383,8 @@ class Fibroblast(Agent):
 
 
     def step(self):
-        """ Step"""
-        # only migration over the non-wounded areas.
+
+        # Start moving when inflammation is almost over.
         if self.model.blood_flow() > 90:
 
             cellmates = self.model.grid.get_cell_list_contents([self.pos])
@@ -422,7 +400,6 @@ class Fibroblast(Agent):
                         self.energy -= 0.005
         if self.collagen <= 1:
             self.energy = 0
-
 
         #When the wound is repaired fibroblasts are apoptised
         if self.model.Collagen() > 100:

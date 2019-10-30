@@ -41,10 +41,10 @@ class RandomActivationByAgent(RandomActivation):
 
     def step(self, by_breed=True):
         '''
-        Executes the step of each agent breed, one at a time, in random order.
+        Executes the step of each agent cell type, one at a time, in random order.
 
         Args:
-            by_breed: If True, run all agents of a single breed before running
+            by_breed: If True, run all agents of a single cell type before running
                       the next one.
         '''
         if by_breed:
@@ -57,10 +57,10 @@ class RandomActivationByAgent(RandomActivation):
 
     def step_breed(self, breed):
         '''
-        Shuffle order and run all agents of a given breed.
+        Shuffle order and run all agents of a given cell type.
 
         Args:
-            breed: Class object of the breed to run.
+            breed: Class object of the cell type to run.
         '''
         agent_keys = list(self.agents_by_breed[breed].keys())
         self.model.random.shuffle(agent_keys)
@@ -69,7 +69,7 @@ class RandomActivationByAgent(RandomActivation):
 
     def get_breed_count(self, celltype):
         '''
-        Returns the current number of agents of certain celltype in the queue.
+        Returns the current number of agents of certain cell type in the queue.
         '''
         count = 0
         for agents in self.agents_by_breed[celltype].values():
@@ -79,7 +79,7 @@ class RandomActivationByAgent(RandomActivation):
 
     def get_neutrophiltype_count(self, celltype, type):
         '''
-        Returns the current number of neutrophils apoptotic, necrotic and phagocytized in the queue.
+        Returns the current number of neutrophils: apoptotic, necrotic and phagocytized in the queue.
         '''
 
         count = 0
