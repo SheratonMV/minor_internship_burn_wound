@@ -1,4 +1,4 @@
-# APSim_Model.py
+# ODE model
 
 **Combined ODE model simulating systemic inflammation and regeneration of collagen under different clinical conditions.** 
 
