@@ -12,5 +12,5 @@
 
 ##### To perform a 50-run batchrun measuring the final health statuses:
 ```
- python bathcrun.py
+ python batchrun.py
 ```
